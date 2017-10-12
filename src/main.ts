@@ -1,5 +1,6 @@
-import xs from "xstream";
-import { h } from "@cycle/native-screen";
+import xs, { Stream } from "xstream";
+import { h, ScreenSource } from "@cycle/native-screen";
+import { ReactElement } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 
 const styles = StyleSheet.create({
@@ -21,7 +22,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function main(sources) {
+type Sources = {
+  screen: ScreenSource;
+};
+
+type Sinks = {
+  screen: Stream<ReactElement<any>>;
+};
+
+export default function main(sources: Sources): Sinks {
   const vdom$ = xs.of(
     h(View, { style: styles.container }, [
       h(Text, { style: styles.welcome }, "Dat Installer"),
