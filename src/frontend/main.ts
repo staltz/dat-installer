@@ -1,5 +1,6 @@
 import xs, { Stream } from "xstream";
 import { h, ScreenSource } from "@cycle/native-screen";
+import { StartDatReq } from "../typings/messages";
 import { ReactElement } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 const RNFS = require("react-native-fs");
@@ -50,7 +51,7 @@ export default function main(sources: Sources): Sinks {
       "/dats/778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639",
     datKey:
       "dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639"
-  });
+  } as StartDatReq);
 
   return {
     screen: vdom$,

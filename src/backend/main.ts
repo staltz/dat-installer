@@ -1,13 +1,13 @@
 const rn_bridge = require("rn-bridge");
 const Dat = require("dat-node");
-import { Msg, StartDatMsg } from "../messages";
+import { Req, StartDatReq } from "../typings/messages";
 
-rn_bridge.channel.on("message", (packet: string) => {
-  const msg: Msg = JSON.parse(packet);
-  rn_bridge.channel.send("Background got packet from foreground: " + packet);
-  switch (msg.type) {
+rn_bridge.channel.on("message", (message: string) => {
+  const req: Req = JSON.parse(message);
+  rn_bridge.channel.send("Backend got message from frontend: " + message);
+  switch (req.type) {
     case "START_DAT":
-      startDat(msg);
+      startDat(req);
       break;
 
     default:
@@ -15,11 +15,11 @@ rn_bridge.channel.on("message", (packet: string) => {
   }
 });
 
-function startDat(msg: StartDatMsg) {
+function startDat(req: StartDatReq) {
   Dat(
-    msg.storagePath,
+    req.storagePath,
     {
-      key: msg.datKey
+      key: req.datKey
     },
     function(err: any, dat: any) {
       if (err) {

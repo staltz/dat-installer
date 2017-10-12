@@ -1,7 +1,7 @@
-export type StartDatMsg = {
+export type StartDatReq = {
   type: "START_DAT";
   storagePath: string;
   datKey: string;
 };
 
-export type Msg = StartDatMsg;
+export type Req = StartDatReq;

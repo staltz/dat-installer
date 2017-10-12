@@ -14,5 +14,5 @@
     "lib": ["es5"]
   },
   "files": ["src/backend/main.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/typings/messages.d.ts"]
 }
