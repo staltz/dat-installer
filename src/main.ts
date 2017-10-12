@@ -24,10 +24,12 @@ const styles = StyleSheet.create({
 
 type Sources = {
   screen: ScreenSource;
+  nodejs: Stream<string>;
 };
 
 type Sinks = {
   screen: Stream<ReactElement<any>>;
+  nodejs: Stream<string>;
 };
 
 export default function main(sources: Sources): Sinks {
@@ -42,7 +44,14 @@ export default function main(sources: Sources): Sinks {
     ])
   );
 
+  sources.nodejs.addListener({
+    next: x => {
+      console.log("Cycle app got from nodejs:", x);
+    }
+  });
+
   return {
-    screen: vdom$
+    screen: vdom$,
+    nodejs: xs.never()
   };
 }
