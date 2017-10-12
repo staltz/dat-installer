@@ -16,6 +16,7 @@
   },
   "files": [
     "src/frontend/main.ts",
+    "src/frontend/styles.ts",
     "src/frontend/drivers/nodejs.ts",
     "src/typings/nodejs-mobile-react-native.d.ts"
   ],

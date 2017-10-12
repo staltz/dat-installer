@@ -1,5 +1,6 @@
 import xs, { Stream } from "xstream";
-import { h, ScreenSource } from "@cycle/native-screen";
+import { h } from "@cycle/native-screen";
+import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
 import { StartDatReq } from "../typings/messages";
 import { ReactElement } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
@@ -25,24 +26,26 @@ const styles = StyleSheet.create({
 });
 
 type Sources = {
-  screen: ScreenSource;
+  screen: ScreensSource;
   nodejs: Stream<string>;
 };
 
 type Sinks = {
-  screen: Stream<ReactElement<any>>;
+  screen: Stream<ScreenVNode>;
+  navCommand: Stream<Command>;
   nodejs: Stream<string>;
 };
 
 export default function main(sources: Sources): Sinks {
   const response$ = sources.nodejs.startWith("");
 
-  const vdom$ = response$.map(response =>
-    h(View, { style: styles.container }, [
+  const vdom$ = response$.map(response => ({
+    screen: "DatInstaller.Central",
+    vdom: h(View, { style: styles.container }, [
       h(Text, { style: styles.welcome }, "Dat Installer"),
       h(Text, { style: styles.instructions }, response)
     ])
-  );
+  }));
 
   const nodejsRequest$ = xs.of({
     type: "START_DAT",
@@ -55,6 +58,7 @@ export default function main(sources: Sources): Sinks {
 
   return {
     screen: vdom$,
+    navCommand: xs.never(),
     nodejs: nodejsRequest$.map(req => JSON.stringify(req))
   };
 }

@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@cycle/native-screen@^1.0.0-rc.4":
+"@cycle/native-screen@1.0.0-rc.4", "@cycle/native-screen@^1.0.0-rc.4":
   version "1.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/@cycle/native-screen/-/native-screen-1.0.0-rc.4.tgz#538504fc9e2cd81dcf9f718792b18b6060dc9ee2"
   dependencies:
@@ -1275,6 +1275,13 @@ csurf@~1.8.3:
     cookie-signature "1.0.6"
     csrf "~3.0.0"
     http-errors "~1.3.1"
+
+cycle-native-navigation@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/cycle-native-navigation/-/cycle-native-navigation-1.1.0.tgz#045b440b8eea39241852bfb5a037910196b56136"
+  dependencies:
+    "@cycle/native-screen" "1.0.0-rc.4"
+    xstream "10.x"
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -2693,13 +2700,13 @@ lodash.templatesettings@^3.0.0:
     lodash._reinterpolate "^3.0.0"
     lodash.escape "^3.0.0"
 
+lodash@4.x.x, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.6.1:
+  version "4.17.4"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
+
 lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
-
-lodash@^4.14.0, lodash@^4.16.6, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.6.1:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
 longest@^1.0.1:
   version "1.0.1"
@@ -3392,6 +3399,12 @@ react-native-fs@^2.8.1:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
 
+react-native-navigation@^1.1.236:
+  version "1.1.236"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.236.tgz#4babbfee14d9f865186f763248ffa54da68ad7fd"
+  dependencies:
+    lodash "4.x.x"
+
 react-native@0.49.3:
   version "0.49.3"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.49.3.tgz#0ca459ee49f9c59e8326b2ced9e34c59333a2f26"
@@ -4014,7 +4027,7 @@ supports-color@^4.0.0:
   dependencies:
     has-flag "^2.0.0"
 
-symbol-observable@^1.0.4:
+symbol-observable@^1.0.2, symbol-observable@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
 
@@ -4418,6 +4431,12 @@ xmldom@0.1.x:
 xpipe@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/xpipe/-/xpipe-1.0.5.tgz#8dd8bf45fc3f7f55f0e054b878f43a62614dafdf"
+
+xstream@10.x:
+  version "10.9.0"
+  resolved "https://registry.yarnpkg.com/xstream/-/xstream-10.9.0.tgz#db7934cec2da01360d43abbbc879b84524397b55"
+  dependencies:
+    symbol-observable "^1.0.2"
 
 "xstream@10.x || 11.x", xstream@^11.0.0:
   version "11.0.0"
