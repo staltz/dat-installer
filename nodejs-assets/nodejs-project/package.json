@@ -1,5 +1,8 @@
 {
   "name": "dat-installer-background",
   "version": "0.0.0",
-  "main": "main.js"
+  "main": "main.js",
+  "dependencies": {
+    "dat-node": "3.5.3"
+  }
 }
