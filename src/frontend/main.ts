@@ -4,6 +4,7 @@ import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
 import { StartDatReq } from "../typings/messages";
 import { ReactElement } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
+import ActionButton from "react-native-action-button";
 const RNFS = require("react-native-fs");
 
 const styles = StyleSheet.create({
@@ -43,7 +44,10 @@ export default function main(sources: Sources): Sinks {
     screen: "DatInstaller.Central",
     vdom: h(View, { style: styles.container }, [
       h(Text, { style: styles.welcome }, "Dat Installer"),
-      h(Text, { style: styles.instructions }, response)
+      h(Text, { style: styles.instructions }, response),
+      h(ActionButton, {
+        buttonColor: "rgb(25, 158, 51)"
+      })
     ])
   }));
 

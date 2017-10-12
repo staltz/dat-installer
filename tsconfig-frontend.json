@@ -18,7 +18,8 @@
     "src/frontend/main.ts",
     "src/frontend/styles.ts",
     "src/frontend/drivers/nodejs.ts",
-    "src/typings/nodejs-mobile-react-native.d.ts"
+    "src/typings/nodejs-mobile-react-native.d.ts",
+    "src/typings/react-native-action-button.d.ts"
   ],
   "exclude": ["node_modules"]
 }

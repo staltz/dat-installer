@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@cycle/native-screen@1.0.0-rc.4", "@cycle/native-screen@^1.0.0-rc.4":
+"@cycle/native-screen@1.0.0-rc.4":
   version "1.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/@cycle/native-screen/-/native-screen-1.0.0-rc.4.tgz#538504fc9e2cd81dcf9f718792b18b6060dc9ee2"
   dependencies:
@@ -3313,7 +3313,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.6, prop-types@^15.5.8:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -3391,6 +3391,12 @@ react-devtools-core@^2.5.0:
   dependencies:
     shell-quote "^1.6.1"
     ws "^2.0.3"
+
+react-native-action-button@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-action-button/-/react-native-action-button-2.8.0.tgz#8446388f722c1a95619f28ab33b91bf9488075e9"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-fs@^2.8.1:
   version "2.8.1"
