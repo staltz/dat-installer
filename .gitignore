@@ -35,3 +35,5 @@ buck-out/
 # Generated
 #
 /lib
+/nodejs-assets/nodejs-project/main.js
+/nodejs-assets/nodejs-project/package.json

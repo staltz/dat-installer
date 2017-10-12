@@ -11,8 +11,13 @@
     "skipLibCheck": true,
     "module": "commonjs",
     "target": "es2015",
+    "outDir": "./lib",
     "lib": ["dom", "es5", "scripthost", "es2015"]
   },
-  "include": ["src/**/*"],
+  "files": [
+    "src/frontend/main.ts",
+    "src/frontend/drivers/nodejs.ts",
+    "src/typings/nodejs-mobile-react-native.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

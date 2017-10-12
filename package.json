@@ -3,8 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "lib": "tsc",
-    "prestart": "npm run lib",
+    "setup-back":
+      "cp ./src/backend/package.json ./nodejs-assets/nodejs-project/",
+    "compile-back": "tsc -p ./tsconfig-backend.json",
+    "install-back": "cd ./nodejs-assets/nodejs-project && npm i && cd ../..",
+    "build-back":
+      "npm run setup-back && npm run compile-back && npm run install-back",
+    "build-front": "tsc -p ./tsconfig-frontend.json",
+    "prestart": "npm run build-back && npm run build-front",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },

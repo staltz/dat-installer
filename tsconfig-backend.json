@@ -2,17 +2,17 @@
   "compilerOptions": {
     "removeComments": false,
     "preserveConstEnums": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": false,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "jsx": "react-native",
     "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
     "module": "commonjs",
     "target": "es2015",
-    "lib": ["dom", "es5", "scripthost", "es2015"]
+    "outDir": "./nodejs-assets/nodejs-project",
+    "lib": ["es5"]
   },
-  "include": ["src/**/*"],
+  "files": ["src/backend/main.ts"],
   "exclude": ["node_modules"]
 }
