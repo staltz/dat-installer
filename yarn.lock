@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@cycle/isolate@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-3.1.0.tgz#fb1581750d413f80c230637e17fc248be7dfd16f"
+
 "@cycle/native-screen@1.0.0-rc.4":
   version "1.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/@cycle/native-screen/-/native-screen-1.0.0-rc.4.tgz#538504fc9e2cd81dcf9f718792b18b6060dc9ee2"
