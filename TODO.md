@@ -1,11 +1,9 @@
 # Next
 
-- Add FlatList
-- Render empty state for FlatList
+- Detect dats from fs
 
 # Must
 
-- Detect dats from fs
 - Filter for dats that have metadata.json
 - Add dat link (as popup?) will add to FlatList
 
