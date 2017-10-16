@@ -1,29 +1,35 @@
 import xs, { Stream } from "xstream";
 import isolate from "@cycle/isolate";
+import { HTTPSource, RequestOptions } from "@cycle/http";
 import central, { Sinks as CentralSinks } from "./screens/central";
 import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
+import { Res } from "../typings/messages";
 
 type Sources = {
   screen: ScreensSource;
-  nodejs: Stream<string>;
+  http: HTTPSource;
 };
 
 type Sinks = {
   screen: Stream<ScreenVNode>;
   navCommand: Stream<Command>;
-  nodejs: Stream<string>;
+  http: Stream<RequestOptions>;
 };
 
 export default function main(sources: Sources): Sinks {
-  const centralSinks: CentralSinks = isolate(central, "central")(sources);
+  const isolatedCentral = isolate(central, "central") as typeof central;
+  const centralSinks = isolatedCentral(sources);
 
   const vdom$ = xs.merge(centralSinks.screen);
   const navCommand$ = xs.merge(centralSinks.navCommand);
-  const nodejsRequest$ = xs.merge(centralSinks.nodejs);
+  const request$ = xs.merge(centralSinks.http).map(req => ({
+    ...(req as object),
+    url: "http://localhost:8182" + req.url
+  }));
 
   return {
     screen: vdom$,
     navCommand: navCommand$,
-    nodejs: nodejsRequest$.map(req => JSON.stringify(req))
+    http: request$
   };
 }

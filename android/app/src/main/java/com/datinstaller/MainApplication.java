@@ -3,8 +3,8 @@ package com.datinstaller;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.staltz.reactnativenode.RNNodePackage;
 import com.rnfs.RNFSPackage;
-import com.janeasystems.rn_nodejs_mobile.RNNodeJsMobilePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -26,7 +26,7 @@ public class MainApplication extends NavigationApplication {
     // No need to add RnnPackage and MainReactPackage
       return Arrays.<ReactPackage>asList(
             new RNFSPackage(),
-            new RNNodeJsMobilePackage()
+            new RNNodePackage()
       );
     }
 

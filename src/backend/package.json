@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "main": "main.js",
   "dependencies": {
-    "dat-node": "3.5.3"
+    "dat-node": "3.5.3",
+    "rxjs": "5.4.3",
+    "express": "4.16.2"
   }
 }

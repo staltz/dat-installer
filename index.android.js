@@ -1,6 +1,7 @@
+import RNNode from "react-native-node";
 import { run } from "@cycle/run";
+import { makeHTTPDriver } from "@cycle/http";
 import { makeSingleScreenNavDrivers } from "cycle-native-navigation";
-import makeNodejsDriver from "./lib/drivers/nodejs";
 import { navigatorStyle as centralNavigatorStyle } from "./lib/styles";
 import main from "./lib/main";
 
@@ -18,5 +19,7 @@ const { screenVNodeDriver, commandDriver } = makeSingleScreenNavDrivers(
 run(main, {
   screen: screenVNodeDriver,
   navCommand: commandDriver,
-  nodejs: makeNodejsDriver()
+  http: makeHTTPDriver()
 });
+
+RNNode.start();

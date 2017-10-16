@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "module": "commonjs",
     "target": "es2015",
-    "outDir": "./nodejs-assets/nodejs-project",
+    "types": ["node"],
+    "outDir": "./rnnodeapp",
     "lib": ["es5"]
   },
   "files": ["src/backend/main.ts"],

@@ -1,7 +1,16 @@
 import xs, { Stream } from "xstream";
 import { h } from "@cycle/native-screen";
+import { HTTPSource, RequestOptions } from "@cycle/http";
 import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
-import { Req, StartDatReq } from "../../../typings/messages";
+import {
+  Req,
+  DatSyncReq,
+  SetStoragePathReq,
+  AppMetadata,
+  AllAppsRes,
+  ErrorRes,
+  Res
+} from "../../../typings/messages";
 import { ReactElement } from "react";
 import { Platform, StyleSheet, Text, View, FlatList } from "react-native";
 import ActionButton from "react-native-action-button";
@@ -55,13 +64,13 @@ const styles = StyleSheet.create({
 
 export type Sources = {
   screen: ScreensSource;
-  nodejs: Stream<string>;
+  http: HTTPSource;
 };
 
 export type Sinks = {
   screen: Stream<ScreenVNode>;
   navCommand: Stream<Command>;
-  nodejs: Stream<Req>;
+  http: Stream<RequestOptions>;
 };
 
 const emptyListVDOM = h(View, { style: styles.emptyList }, [
@@ -74,20 +83,41 @@ const emptyListVDOM = h(View, { style: styles.emptyList }, [
 ]);
 
 export default function main(sources: Sources): Sinks {
-  const response$ = sources.nodejs.startWith("");
+  // const apps$ = sources.nodejs
+  //   .filter(isAllAppsRes)
+  //   .map(res => res.apps)
+  //   .startWith([]);
+  const apps$ = xs.of([]);
 
-  const vdom$ = response$.map(response => ({
+  const pongRes$ = sources.http
+    .select("ping")
+    .flatten()
+    .take(1);
+
+  const pingReq$ = xs
+    .periodic(300)
+    .startWith(0)
+    .endWhen(pongRes$)
+    .mapTo({ category: "ping", url: "/ping" });
+
+  const setStoragePathReq$ = pongRes$.mapTo({
+    category: "setStoragePath",
+    url: "/setStoragePath",
+    method: "POST",
+    send: { path: RNFS.ExternalStorageDirectoryPath + "/DatInstaller" }
+  });
+
+  const vdom$ = apps$.map(apps => ({
     screen: "DatInstaller.Central",
     vdom: h(View, { style: styles.container }, [
-      h(Text, { style: styles.info }, response),
-      true
+      apps.length === 0
         ? emptyListVDOM
         : h(FlatList, {
             style: styles.list,
             contentContainerStyle: styles.listContent,
-            data: [],
-            keyExtractor: (item: string) => item,
-            renderItem: ({ item }: any) => h(Text, item)
+            data: apps,
+            keyExtractor: (item: AppMetadata) => item.key,
+            renderItem: ({ item }: { item: AppMetadata }) => h(Text, item.name)
           }),
       h(ActionButton, {
         buttonColor: "rgb(25, 158, 51)"
@@ -95,18 +125,20 @@ export default function main(sources: Sources): Sinks {
     ])
   }));
 
-  const nodejsRequest$ = xs.of({
-    type: "START_DAT",
-    storagePath:
-      RNFS.ExternalStorageDirectoryPath +
-      "/dats/778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639",
-    datKey:
-      "dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639"
-  } as StartDatReq);
+  const request$ = xs.merge(pingReq$, setStoragePathReq$);
+
+  // TODO read DatEventRes
+  // TODO Test
+
+  // const datSyncReq$ = xs.of({
+  //   type: "DAT_SYNC",
+  //   datKey:
+  //     "dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639"
+  // } as DatSyncReq);
 
   return {
     screen: vdom$,
     navCommand: xs.never(),
-    nodejs: nodejsRequest$
+    http: request$
   };
 }
