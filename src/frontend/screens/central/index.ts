@@ -1,7 +1,13 @@
 import xs, { Stream } from "xstream";
 import { HTTPSource, RequestOptions } from "@cycle/http";
-import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
+import {
+  ScreenVNode,
+  ScreensSource,
+  Command,
+  ShowModalCommand
+} from "cycle-native-navigation";
 import { AppMetadata } from "../../../typings/messages";
+import { navigatorStyle } from "../../styles";
 import view from "./view";
 const RNFS = require("react-native-fs");
 
@@ -51,9 +57,19 @@ export default function central(sources: Sources): Sinks {
 
   const request$ = xs.merge(pingReq$, setStoragePathReq$, allAppsReq$);
 
+  const goToAddition$ = sources.screen
+    .select("addApp")
+    .events("press")
+    .mapTo({
+      type: "showModal",
+      screen: "DatInstaller.Addition",
+      title: "Add an Android app",
+      navigatorStyle: navigatorStyle
+    } as ShowModalCommand);
+
   return {
     screen: vdom$,
-    navCommand: xs.never(),
+    navCommand: goToAddition$,
     http: request$
   };
 }

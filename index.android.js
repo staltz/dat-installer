@@ -2,16 +2,16 @@ import RNNode from "react-native-node";
 import { run } from "@cycle/run";
 import { makeHTTPDriver } from "@cycle/http";
 import { makeSingleScreenNavDrivers } from "cycle-native-navigation";
-import { navigatorStyle as centralNavigatorStyle } from "./lib/styles";
+import { navigatorStyle } from "./lib/styles";
 import main from "./lib/main";
 
 const { screenVNodeDriver, commandDriver } = makeSingleScreenNavDrivers(
-  ["DatInstaller.Central"],
+  ["DatInstaller.Central", "DatInstaller.Addition"],
   {
     screen: {
       screen: "DatInstaller.Central",
       title: "Dat Installer",
-      navigatorStyle: centralNavigatorStyle
+      navigatorStyle: navigatorStyle
     }
   }
 );

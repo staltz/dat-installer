@@ -76,6 +76,7 @@ export default function view(
             renderItem: ({ item }: { item: AppMetadata }) => h(Text, item.key)
           }),
       h(ActionButton, {
+        selector: "addApp",
         buttonColor: "rgb(25, 158, 51)"
       })
     ])
