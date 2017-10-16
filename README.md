@@ -11,6 +11,7 @@ Metadata file should have:
   "convention": "1",
   "name": "My awesome app",
   "version": "1.10.2",
-  "apk": "./app-release.apk"
+  "apk": "/app-release.apk",
+  "changelog": "/changelog.md"
 }
 ```
