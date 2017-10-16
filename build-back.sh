@@ -18,6 +18,7 @@ rm ./rnnodeapp/utils.js;
 echo "Cleaning up...";
 declare -a keepModules=("blake2b-wasm"
                         "append-tree"
+                        "hypercore-protocol"
                         "siphash24")
 for i in "${keepModules[@]}"
 do

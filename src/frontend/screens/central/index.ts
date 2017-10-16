@@ -2,15 +2,7 @@ import xs, { Stream } from "xstream";
 import { h } from "@cycle/native-screen";
 import { HTTPSource, RequestOptions } from "@cycle/http";
 import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
-import {
-  Req,
-  DatSyncReq,
-  SetStoragePathReq,
-  AppMetadata,
-  AllAppsRes,
-  ErrorRes,
-  Res
-} from "../../../typings/messages";
+import { AppMetadata } from "../../../typings/messages";
 import { ReactElement } from "react";
 import { Platform, StyleSheet, Text, View, FlatList } from "react-native";
 import ActionButton from "react-native-action-button";
@@ -82,32 +74,8 @@ const emptyListVDOM = h(View, { style: styles.emptyList }, [
   )
 ]);
 
-export default function main(sources: Sources): Sinks {
-  // const apps$ = sources.nodejs
-  //   .filter(isAllAppsRes)
-  //   .map(res => res.apps)
-  //   .startWith([]);
-  const apps$ = xs.of([]);
-
-  const pongRes$ = sources.http
-    .select("ping")
-    .flatten()
-    .take(1);
-
-  const pingReq$ = xs
-    .periodic(300)
-    .startWith(0)
-    .endWhen(pongRes$)
-    .mapTo({ category: "ping", url: "/ping" });
-
-  const setStoragePathReq$ = pongRes$.mapTo({
-    category: "setStoragePath",
-    url: "/setStoragePath",
-    method: "POST",
-    send: { path: RNFS.ExternalStorageDirectoryPath + "/DatInstaller" }
-  });
-
-  const vdom$ = apps$.map(apps => ({
+function view(apps$: Stream<Array<AppMetadata>>): Stream<ScreenVNode> {
+  return apps$.map(apps => ({
     screen: "DatInstaller.Central",
     vdom: h(View, { style: styles.container }, [
       apps.length === 0
@@ -117,24 +85,49 @@ export default function main(sources: Sources): Sinks {
             contentContainerStyle: styles.listContent,
             data: apps,
             keyExtractor: (item: AppMetadata) => item.key,
-            renderItem: ({ item }: { item: AppMetadata }) => h(Text, item.name)
+            renderItem: ({ item }: { item: AppMetadata }) => h(Text, item.key)
           }),
       h(ActionButton, {
         buttonColor: "rgb(25, 158, 51)"
       })
     ])
   }));
+}
 
-  const request$ = xs.merge(pingReq$, setStoragePathReq$);
+export default function main(sources: Sources): Sinks {
+  const apps$ = sources.http
+    .select("allApps")
+    .flatten()
+    .map(res => res.body.apps)
+    .startWith([])
+    .debug("apps");
 
-  // TODO read DatEventRes
-  // TODO Test
+  const pongRes$ = sources.http
+    .select("ping")
+    .flatten()
+    .take(1);
 
-  // const datSyncReq$ = xs.of({
-  //   type: "DAT_SYNC",
-  //   datKey:
-  //     "dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639"
-  // } as DatSyncReq);
+  const vdom$ = view(apps$);
+
+  const setStoragePathReq$ = pongRes$.mapTo({
+    category: "setStoragePath",
+    url: "/setStoragePath",
+    method: "POST",
+    send: { path: RNFS.ExternalStorageDirectoryPath + "/DatInstaller" }
+  });
+
+  const allAppsReq$ = pongRes$
+    .map(() => xs.periodic(2000).startWith(null as any))
+    .flatten()
+    .mapTo({ category: "allApps", url: "/allApps" });
+
+  const pingReq$ = xs
+    .periodic(300)
+    .startWith(0)
+    .endWhen(pongRes$)
+    .mapTo({ category: "ping", url: "/ping" });
+
+  const request$ = xs.merge(pingReq$, setStoragePathReq$, allAppsReq$);
 
   return {
     screen: vdom$,

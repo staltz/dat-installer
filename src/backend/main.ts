@@ -1,102 +1,92 @@
-import { Observable } from "rxjs";
-import {
-  Req,
-  SetStoragePathReq,
-  DatSyncReq,
-  Res,
-  AllAppsRes,
-  AppMetadata,
-  ErrorRes,
-  DatEventRes
-} from "../typings/messages";
-import { createDat, joinNetwork, fsreaddir } from "./utils";
+import { Observable, Subject, ReplaySubject } from "rxjs";
+import { AppMetadata } from "../typings/messages";
+import { createDat, joinNetwork, looksLikeDatHash } from "./utils";
 import { Request, Response } from "express";
+const bodyParser = require("body-parser");
 const express = require("express");
 const Dat = require("dat-node");
 const path = require("path");
 const Rx = require("rxjs");
 const fs = require("fs");
 
-const server = express();
+console.log("Initializing express app and Dat peer");
 
-function isSetStoragePathReq(req: Req): req is SetStoragePathReq {
-  return req.type === "SET_STORAGE_PATH";
-}
-function isDatSyncReq(req: Req): req is DatSyncReq {
-  return req.type === "DAT_SYNC";
-}
+const server = express();
+server.use(bodyParser.json());
+
+const storagePath$: ReplaySubject<string> = new Rx.ReplaySubject(1);
+const startDatSync$: Subject<string> = new Subject();
+
+type State = {
+  [key: string]: AppMetadata;
+};
+
+let global_state: State = {};
 
 server.get("/ping", (req: Request, res: Response) => {
   res.json({ msg: "pong" });
 });
 
 server.post("/setStoragePath", (req: Request, res: Response) => {
-  res.json({ msg: "TODO, set storage path here" });
+  storagePath$.next(req.body.path);
+  res.sendStatus(200);
 });
 
+server.post("/datSync", (req: Request, res: Response) => {
+  startDatSync$.next(req.body.datKey);
+  res.sendStatus(200);
+});
+
+server.get("/allApps", (req: Request, res: Response) => {
+  const allApps = Object.keys(global_state)
+    .filter(looksLikeDatHash)
+    .map(key => global_state[key]);
+  res.json({ apps: allApps });
+});
+
+// Read cold stored Dats and start syncing them
+storagePath$
+  .take(1)
+  .map(storagePath =>
+    (fs.readdirSync(storagePath) as Array<string>)
+      .filter(looksLikeDatHash)
+      .filter(file => {
+        const fullPath = path.join(storagePath, file);
+        return fs.lstatSync(fullPath).isDirectory();
+      })
+  )
+  .switchMap(files => Rx.Observable.from(files))
+  .subscribe({
+    next: (datDir: string) => {
+      const parts = datDir.split("/");
+      const datHash = parts[parts.length - 1];
+      startDatSync$.next(datHash);
+    }
+  });
+
+// Start syncing Dats detected by the backend
+startDatSync$
+  .withLatestFrom(storagePath$)
+  .switchMap(arr => {
+    const datHash = arr[0];
+    const storagePath = arr[1];
+    const datKey = "dat://" + datHash;
+    const datPath = path.join(storagePath, datHash);
+    return createDat(datPath, { key: datKey });
+  })
+  .switchMap(dat => joinNetwork(dat).mapTo(dat))
+  .subscribe({
+    next: dat => {
+      const datKey = (dat.key as Buffer).toString("hex");
+      if (global_state[datKey]) {
+        global_state[datKey].peers = dat.network.connected;
+      } else {
+        global_state[datKey] = {
+          key: datKey,
+          peers: dat.network.connected
+        };
+      }
+    }
+  });
+
 server.listen(8182);
-
-// const request$: Observable<Req> = (Observable.bindNodeCallback as any)(
-//   rn_bridge.channel.on.bind(rn_bridge.channel)
-// )("message").map((message: string) => JSON.parse(message));
-
-// const storagePath$: Observable<string> = request$
-//   .filter(isSetStoragePathReq)
-//   .map(req => req.path)
-//   .do(path => sendResponse({ type: "storagePath", message: path } as any))
-//   .publishReplay(1)
-//   .refCount();
-
-// const datRes$ = request$
-//   .filter(isDatSyncReq)
-//   .combineLatest(storagePath$)
-//   .do(arr => sendResponse({ type: "combineLatest", message: arr } as any))
-//   .mergeMap(arr => {
-//     const req = arr[0];
-//     const storagePath = arr[1];
-//     const datHash = req.datKey.split("dat://")[1];
-//     const datPath = path.join(storagePath, "DatInstaller", datHash);
-//     return createDat(datPath, { key: req.datKey });
-//   })
-//   .mergeMap(dat => joinNetwork(dat).mapTo(dat))
-//   .map(
-//     dat =>
-//       ({
-//         type: "DAT_EVENT",
-//         peers: dat.network.connected
-//       } as DatEventRes)
-//   );
-// .catch(err =>
-//   Observable.of({ type: "ERROR", message: String(err) } as ErrorRes)
-// );
-
-// const allAppsRes$ = storagePath$
-//   .switchMap(path => fsreaddir(path))
-//   .do(files => sendResponse({ type: "fsreaddir", message: files } as any))
-//   .map(files =>
-//     files.filter(file => fs.lstatSync(file).isDirectory()).map(
-//       file =>
-//         ({
-//           key: file,
-//           name: "<App name>",
-//           version: "<App version>",
-//           peers: 0
-//         } as AppMetadata)
-//     )
-//   )
-//   .do(apps => sendResponse({ type: "apps", message: apps } as any))
-//   .map(apps => ({ type: "ALL_APPS", apps } as AllAppsRes));
-
-// const response$: Observable<Res> = Observable.merge(datRes$, allAppsRes$);
-
-// function sendResponse(res: Res): void {
-//   const msg = JSON.stringify(res);
-//   rn_bridge.channel.send(msg);
-// }
-
-// response$.subscribe({
-//   next: sendResponse,
-//   error: e => {
-//     sendResponse({ type: "ERROR", message: "Unexpected error: " + e });
-//   }
-// });

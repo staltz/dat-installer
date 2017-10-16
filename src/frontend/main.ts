@@ -3,7 +3,6 @@ import isolate from "@cycle/isolate";
 import { HTTPSource, RequestOptions } from "@cycle/http";
 import central, { Sinks as CentralSinks } from "./screens/central";
 import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
-import { Res } from "../typings/messages";
 
 type Sources = {
   screen: ScreensSource;
