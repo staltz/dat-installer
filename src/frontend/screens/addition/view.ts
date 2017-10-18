@@ -77,8 +77,9 @@ export default function view(state$: Stream<State>): Stream<ScreenVNode> {
         h(Text, { style: styles.info }, "Paste a Dat link here:"),
         h(TextInput, {
           selector: "inputAdd",
-          style: styles.input,
           multiline: false,
+          autoFocus: true,
+          style: styles.input,
           placeholder: "dat://1a2a3c45d67e89f",
           placeholderTextColor: "#c6c6c6",
         }),
