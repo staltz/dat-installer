@@ -1,13 +1,12 @@
 # Next
 
-- Update peer count for each dat
-  (using network.on('connection') ?)
 - Render the central list items properly
+- AppDetails screen
 
 # Must
 
-- Add dat link (as popup?) will add to FlatList
-- AppDetails screen
+- Addition submission goes back to Central
+- Improve GUI of Addition screen
 - Remove app
 
 # Should

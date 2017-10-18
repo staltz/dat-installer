@@ -75,9 +75,12 @@ export default function view(state$: Stream<State>): Stream<ScreenVNode> {
             renderItem: ({ item }: { item: AppMetadata }) =>
               h(
                 Text,
-                item.name && item.version
+                (item.name && item.version
                   ? `${item.name} v${item.version}`
-                  : item.key
+                  : item.key) +
+                  " from " +
+                  item.peers +
+                  " peers"
               )
           }),
       h(ActionButton, {

@@ -73,16 +73,21 @@ const dat$ = startDatSync$
 // Update the number of connected peers
 dat$.subscribe({
   next: dat => {
-    const datHash = (dat.key as Buffer).toString("hex");
-    console.log("network connected with ", dat.network.connected, "peers");
-    if (global_state[datHash]) {
-      global_state[datHash].peers = dat.network.connected;
-    } else {
-      global_state[datHash] = {
-        key: datHash,
-        peers: dat.network.connected
-      };
+    function updatePeers() {
+      const datHash = (dat.key as Buffer).toString("hex");
+      console.log(`${dat.network.connected} other peers sharing ${datHash}`);
+      if (global_state[datHash]) {
+        global_state[datHash].peers = dat.network.connected;
+      } else {
+        global_state[datHash] = {
+          key: datHash,
+          peers: dat.network.connected
+        };
+      }
     }
+
+    updatePeers();
+    dat.network.on("connection", updatePeers);
   },
   error: e => {
     console.error(e);
