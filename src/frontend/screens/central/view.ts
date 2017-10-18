@@ -4,6 +4,7 @@ import { ScreenVNode } from "cycle-native-navigation";
 import { h } from "@cycle/native-screen";
 import ActionButton from "react-native-action-button";
 import { AppMetadata } from "../../../typings/messages";
+import { State } from "./model";
 
 const styles = StyleSheet.create({
   container: {
@@ -60,20 +61,24 @@ const emptyListVDOM = h(View, { style: styles.emptyList }, [
   )
 ]);
 
-export default function view(
-  apps$: Stream<Array<AppMetadata>>
-): Stream<ScreenVNode> {
-  return apps$.map(apps => ({
+export default function view(state$: Stream<State>): Stream<ScreenVNode> {
+  return state$.map(state => ({
     screen: "DatInstaller.Central",
     vdom: h(View, { style: styles.container }, [
-      apps.length === 0
+      state.apps.length === 0
         ? emptyListVDOM
         : h(FlatList, {
             style: styles.list,
             contentContainerStyle: styles.listContent,
-            data: apps,
+            data: state.apps,
             keyExtractor: (item: AppMetadata) => item.key,
-            renderItem: ({ item }: { item: AppMetadata }) => h(Text, item.key)
+            renderItem: ({ item }: { item: AppMetadata }) =>
+              h(
+                Text,
+                item.name && item.version
+                  ? `${item.name} v${item.version}`
+                  : item.key
+              )
           }),
       h(ActionButton, {
         selector: "addApp",

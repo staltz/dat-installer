@@ -2,6 +2,7 @@ import RNNode from "react-native-node";
 import { run } from "@cycle/run";
 import { makeHTTPDriver } from "@cycle/http";
 import { makeSingleScreenNavDrivers } from "cycle-native-navigation";
+import onionify from "cycle-onionify";
 import { navigatorStyle } from "./lib/styles";
 import main from "./lib/main";
 
@@ -16,7 +17,7 @@ const { screenVNodeDriver, commandDriver } = makeSingleScreenNavDrivers(
   }
 );
 
-run(main, {
+run(onionify(main), {
   screen: screenVNodeDriver,
   navCommand: commandDriver,
   http: makeHTTPDriver()
