@@ -20,7 +20,7 @@ export default function model(actions: Actions): Stream<Reducer<State>> {
     apps =>
       function updateAppsReducer(prev: State): State {
         return { ...prev, apps };
-      }
+      },
   );
 
   return xs.merge(initReducer$, updateAppsReducer$);

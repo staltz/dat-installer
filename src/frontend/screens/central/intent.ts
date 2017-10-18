@@ -7,6 +7,6 @@ export default function intent(screenSource: ScreensSource) {
     goToAddition$: screenSource
       .select("addApp")
       .events("press")
-      .mapTo(null)
+      .mapTo(null),
   };
 }

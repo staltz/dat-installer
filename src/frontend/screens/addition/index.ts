@@ -31,7 +31,7 @@ export default function addition(sources: Sources): Sinks {
     .map(([_, state]) => ({
       url: "/datSync",
       method: "POST",
-      send: { datKey: state.textInput }
+      send: { datKey: state.textInput },
     }));
 
   const reducer$ = model(actions);
@@ -42,6 +42,6 @@ export default function addition(sources: Sources): Sinks {
     screen: vdom$,
     navCommand: xs.never(),
     onion: reducer$,
-    http: request$
+    http: request$,
   };
 }

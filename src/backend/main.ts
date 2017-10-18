@@ -5,7 +5,7 @@ import {
   joinNetwork,
   trimProtocolPrefix,
   looksLikeDatHash,
-  readFileInDat
+  readFileInDat,
 } from "./utils";
 import { Request, Response } from "express";
 const bodyParser = require("body-parser");
@@ -81,7 +81,7 @@ dat$.subscribe({
       } else {
         global_state[datHash] = {
           key: datHash,
-          peers: dat.network.connected
+          peers: dat.network.connected,
         };
       }
     }
@@ -92,13 +92,13 @@ dat$.subscribe({
   error: e => {
     console.error(e);
     global_errors.push(e);
-  }
+  },
 });
 
 // Read metadata to update global_state
 dat$
   .switchMap(dat =>
-    readFileInDat(dat, METADATA_FILENAME).map(contents => ({ contents, dat }))
+    readFileInDat(dat, METADATA_FILENAME).map(contents => ({ contents, dat })),
   )
   .subscribe({
     next: ({ contents, dat }) => {
@@ -115,7 +115,7 @@ dat$
             peers: 0,
             name: json.name,
             version: json.version,
-            changelog: json.changelog
+            changelog: json.changelog,
           };
         }
       } catch (e) {
@@ -126,12 +126,12 @@ dat$
     error: (e: Error) => {
       if (e.message === `${METADATA_FILENAME} could not be found`) {
         global_errors.push({
-          message: "The Dat for this app is missing " + METADATA_FILENAME
+          message: "The Dat for this app is missing " + METADATA_FILENAME,
         });
       } else {
         global_errors.push(e);
       }
-    }
+    },
   });
 
 // Read cold stored Dats and start syncing them
@@ -144,7 +144,7 @@ storagePath$
       .filter(file => {
         const fullPath = path.join(storagePath, file);
         return fs.lstatSync(fullPath).isDirectory();
-      })
+      }),
   )
   .switchMap(files => Rx.Observable.from(files))
   .subscribe({
@@ -154,7 +154,7 @@ storagePath$
     },
     error: e => {
       global_errors.push(e);
-    }
+    },
   });
 
 server.listen(8182);

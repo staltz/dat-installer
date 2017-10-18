@@ -7,6 +7,6 @@ export default function intent(screenSource: ScreensSource) {
       .events("press")
       .mapTo(null),
 
-    updateText$: screenSource.select("inputAdd").events("changeText")
+    updateText$: screenSource.select("inputAdd").events("changeText"),
   };
 }

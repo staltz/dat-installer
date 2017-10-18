@@ -33,11 +33,11 @@ export default function main(sources: Sources): Sinks {
   const vdom$ = xs.merge(centralSinks.screen, additionSinks.screen);
   const navCommand$ = xs.merge(
     centralSinks.navCommand,
-    additionSinks.navCommand
+    additionSinks.navCommand,
   );
   const request$ = xs.merge(centralSinks.http, additionSinks.http).map(req => ({
     ...(req as object),
-    url: "http://localhost:8182" + req.url
+    url: "http://localhost:8182" + req.url,
   }));
   const reducer$ = xs.merge(centralSinks.onion, additionSinks.onion);
 
@@ -45,6 +45,6 @@ export default function main(sources: Sources): Sinks {
     screen: vdom$,
     navCommand: navCommand$,
     onion: reducer$,
-    http: request$
+    http: request$,
   };
 }

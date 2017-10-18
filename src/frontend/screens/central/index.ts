@@ -5,7 +5,7 @@ import {
   ScreenVNode,
   ScreensSource,
   Command,
-  ShowModalCommand
+  ShowModalCommand,
 } from "cycle-native-navigation";
 import { AppMetadata } from "../../../typings/messages";
 import { navigatorStyle } from "../../styles";
@@ -40,7 +40,7 @@ function httpIntent(httpSource: HTTPSource) {
       .select("ping")
       .flatten()
       .take(1)
-      .mapTo(null)
+      .mapTo(null),
   };
 }
 
@@ -55,7 +55,7 @@ function httpRequests(start$: Stream<null>): Stream<Request> {
     category: "setStoragePath",
     url: "/setStoragePath",
     method: "POST",
-    send: { path: RNFS.ExternalStorageDirectoryPath + "/DatInstaller" }
+    send: { path: RNFS.ExternalStorageDirectoryPath + "/DatInstaller" },
   });
 
   const allAppsReq$ = start$
@@ -77,13 +77,13 @@ export default function central(sources: Sources): Sinks {
     type: "showModal",
     screen: "DatInstaller.Addition",
     title: "Add an Android app",
-    navigatorStyle: navigatorStyle
+    navigatorStyle: navigatorStyle,
   } as ShowModalCommand);
 
   return {
     screen: vdom$,
     navCommand: goToAddition$,
     onion: reducer$,
-    http: request$
+    http: request$,
   };
 }

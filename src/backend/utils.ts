@@ -5,7 +5,7 @@ export const createDat = Observable.bindNodeCallback<string, any, any>(Dat);
 
 export function readFileInDat(dat: any, file: string): Observable<string> {
   return Observable.bindNodeCallback<string, string>(
-    dat.archive.readFile.bind(dat.archive)
+    dat.archive.readFile.bind(dat.archive),
   )(file);
 }
 

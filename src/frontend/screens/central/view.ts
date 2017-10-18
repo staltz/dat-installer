@@ -1,6 +1,6 @@
 import xs, { Stream } from "xstream";
 import { PureComponent } from "react";
-import { Platform, StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import { ScreenVNode } from "cycle-native-navigation";
 import { h } from "@cycle/native-screen";
 import ActionButton from "react-native-action-button";
@@ -13,23 +13,23 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch",
-    backgroundColor: "#e9ecef"
+    backgroundColor: "#e9ecef",
   },
 
   list: {
-    alignSelf: "stretch"
+    alignSelf: "stretch",
   },
 
   listContent: {
     flex: 1,
-    flexDirection: "column"
+    flexDirection: "column",
   },
 
   separator: {
     height: 1,
     marginLeft: 5,
     marginRight: 5,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   },
 
   item: {
@@ -42,30 +42,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     elevation: 2,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   firstItem: {
-    marginTop: 5
+    marginTop: 5,
   },
 
   lastItem: {
-    marginBottom: 5
+    marginBottom: 5,
   },
 
   appDetails: {
-    flexDirection: "column"
+    flexDirection: "column",
   },
 
   appTitle: {
     fontSize: 16,
     maxWidth: 160,
-    color: "#202020"
+    color: "#202020",
   },
 
   appSubtitle: {
     fontSize: 14,
-    color: "#202020"
+    color: "#202020",
   },
 
   logoPlaceholder: {
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginRight: 10,
     backgroundColor: "#5a88c4",
-    borderRadius: 6
+    borderRadius: 6,
   },
 
   emptyList: {
@@ -82,34 +82,34 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     paddingRight: 25,
     marginTop: 5,
-    alignItems: "flex-end"
+    alignItems: "flex-end",
   },
 
   emptyListTitle: {
     fontSize: 20,
     textAlign: "center",
     color: "#202020",
-    margin: 10
+    margin: 10,
   },
 
   emptyListSubtitle: {
     fontSize: 15,
     textAlign: "center",
     color: "#202020",
-    margin: 10
+    margin: 10,
   },
 
   welcome: {
     fontSize: 20,
     textAlign: "center",
-    margin: 10
+    margin: 10,
   },
 
   info: {
     textAlign: "center",
     color: "#333333",
-    marginBottom: 5
-  }
+    marginBottom: 5,
+  },
 });
 
 const emptyListVDOM = h(View, { style: styles.emptyList }, [
@@ -117,8 +117,8 @@ const emptyListVDOM = h(View, { style: styles.emptyList }, [
   h(
     Text,
     { style: styles.emptyListSubtitle },
-    "Press this button to get started"
-  )
+    "Press this button to get started",
+  ),
 ]);
 
 /**
@@ -131,7 +131,7 @@ type HackyTotalLength = {
 
 function renderItem({
   item,
-  index
+  index,
 }: {
   item: AppMetadata & HackyTotalLength;
   index: number;
@@ -153,11 +153,11 @@ function renderItem({
         {
           style: styles.appSubtitle,
           numberOfLines: 1,
-          ellipsizeMode: "middle"
+          ellipsizeMode: "middle",
         },
-        item.version ? item.version : String(item.peers)
-      )
-    ])
+        item.version ? item.version : String(item.peers),
+      ),
+    ]),
   ]);
 }
 
@@ -184,13 +184,13 @@ export default function view(state$: Stream<State>): Stream<ScreenVNode> {
               data: state.apps,
               keyExtractor: (item: AppMetadata) => item.key,
               ItemSeparatorComponent: Separator,
-              renderItem: renderItem
+              renderItem: renderItem,
             }),
         h(ActionButton, {
           selector: "addApp",
-          buttonColor: "rgb(25, 158, 51)"
-        })
-      ])
+          buttonColor: "rgb(25, 158, 51)",
+        }),
+      ]),
     };
   });
 }

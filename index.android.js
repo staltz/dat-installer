@@ -12,15 +12,15 @@ const { screenVNodeDriver, commandDriver } = makeSingleScreenNavDrivers(
     screen: {
       screen: "DatInstaller.Central",
       title: "Dat Installer",
-      navigatorStyle: navigatorStyle
-    }
-  }
+      navigatorStyle: navigatorStyle,
+    },
+  },
 );
 
 run(onionify(main), {
   screen: screenVNodeDriver,
   navCommand: commandDriver,
-  http: makeHTTPDriver()
+  http: makeHTTPDriver(),
 });
 
 RNNode.start();

@@ -5,5 +5,5 @@ export const navigatorStyle = {
   navBarBackgroundColor: "#199E33",
   navBarTextFontSize: 18,
   navBarTextFontBold: true,
-  topBarElevationShadowEnabled: false
+  topBarElevationShadowEnabled: false,
 };

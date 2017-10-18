@@ -5,7 +5,7 @@ import {
   Text,
   TouchableNativeFeedback,
   View,
-  TextInput
+  TextInput,
 } from "react-native";
 import { ScreenVNode } from "cycle-native-navigation";
 import { State } from "./model";
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "#F5FCFF",
   },
 
   info: {
@@ -25,13 +25,13 @@ const styles = StyleSheet.create({
     color: "#202020",
     marginTop: 16,
     marginLeft: 20,
-    marginRight: 20
+    marginRight: 20,
   },
 
   input: {
     fontSize: 16,
     marginLeft: 20,
-    marginRight: 20
+    marginRight: 20,
   },
 
   buttonContainer: {
@@ -43,15 +43,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
     borderBottomLeftRadius: 3,
     borderBottomRightRadius: 3,
-    backgroundColor: "#199E33"
+    backgroundColor: "#199E33",
   },
 
   buttonText: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
-    color: "#ffffff"
-  }
+    color: "#ffffff",
+  },
 });
 
 export default function view(state$: Stream<State>): Stream<ScreenVNode> {
@@ -62,20 +62,20 @@ export default function view(state$: Stream<State>): Stream<ScreenVNode> {
       h(TextInput, {
         selector: "inputAdd",
         style: styles.input,
-        placeholder: "dat://1a2a3c45d67e89f"
+        placeholder: "dat://1a2a3c45d67e89f",
       }),
       h(
         TouchableNativeFeedback,
         {
           selector: "doneAdd",
-          background: TouchableNativeFeedback.SelectableBackground()
+          background: TouchableNativeFeedback.SelectableBackground(),
         },
         [
           h(View, { style: styles.buttonContainer }, [
-            h(Text, { style: styles.buttonText }, "Add")
-          ])
-        ]
-      )
-    ])
+            h(Text, { style: styles.buttonText }, "Add"),
+          ]),
+        ],
+      ),
+    ]),
   }));
 }

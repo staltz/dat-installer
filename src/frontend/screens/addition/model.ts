@@ -19,7 +19,7 @@ export default function model(actions: Actions): Stream<Reducer<State>> {
     nextText =>
       function updateReducer(prev: State): State {
         return { ...prev, textInput: nextText };
-      }
+      },
   );
 
   return xs.merge(initReducer$, updateReducer$);
