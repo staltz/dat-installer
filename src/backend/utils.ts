@@ -3,10 +3,14 @@ const Dat = require("dat-node");
 
 export const createDat = Observable.bindNodeCallback<string, any, any>(Dat);
 
-export function readFileInDat(dat: any, file: string): Observable<string> {
-  return Observable.bindNodeCallback<string, string>(
+export function readFileInDat(
+  dat: any,
+  file: string,
+  encoding: string,
+): Observable<string> {
+  return Observable.bindNodeCallback<string, string, string>(
     dat.archive.readFile.bind(dat.archive),
-  )(file);
+  )(file, encoding);
 }
 
 export function joinNetwork(dat: any): Observable<any> {

@@ -3822,6 +3822,13 @@ react-native-node@^2.1.1:
     tar "^3.1.5"
     yargs "^8.0.2"
 
+react-native-simple-markdown@^1.0.60-rc.3:
+  version "1.0.60-rc.3"
+  resolved "https://registry.yarnpkg.com/react-native-simple-markdown/-/react-native-simple-markdown-1.0.60-rc.3.tgz#80c772b22eb32fb43b9f23620f6c876aef06d721"
+  dependencies:
+    lodash "^4.15.0"
+    simple-markdown "git://github.com/CharlesMangwa/simple-markdown.git"
+
 react-native@0.49.3:
   version "0.49.3"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.49.3.tgz#0ca459ee49f9c59e8326b2ced9e34c59333a2f26"
@@ -4317,6 +4324,10 @@ shellwords@^0.1.0:
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
+
+"simple-markdown@git://github.com/CharlesMangwa/simple-markdown.git":
+  version "0.1.1"
+  resolved "git://github.com/CharlesMangwa/simple-markdown.git#33d963c760b8196bee01b1a5ba9974bc7f669af1"
 
 simple-plist@^0.2.1:
   version "0.2.1"

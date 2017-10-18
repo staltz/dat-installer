@@ -96,43 +96,80 @@ dat$.subscribe({
 });
 
 // Read metadata to update global_state
-dat$
+const metadata$ = dat$
+  .do(x => console.log("attempt to read " + METADATA_FILENAME + " file"))
   .switchMap(dat =>
-    readFileInDat(dat, METADATA_FILENAME).map(contents => ({ contents, dat })),
+    readFileInDat(dat, METADATA_FILENAME, "utf-8").map(contents => ({
+      json: JSON.parse(contents),
+      dat,
+    })),
   )
-  .subscribe({
-    next: ({ contents, dat }) => {
-      try {
-        const json = JSON.parse(contents);
-        const datHash = (dat.key as Buffer).toString("hex");
-        if (global_state[datHash]) {
-          global_state[datHash].name = json.name;
-          global_state[datHash].version = json.version;
-          global_state[datHash].changelog = json.changelog;
-        } else {
-          global_state[datHash] = {
-            key: datHash,
-            peers: 0,
-            name: json.name,
-            version: json.version,
-            changelog: json.changelog,
-          };
-        }
-      } catch (e) {
-        console.error(e);
-        global_errors.push(e);
-      }
-    },
-    error: (e: Error) => {
-      if (e.message === `${METADATA_FILENAME} could not be found`) {
-        global_errors.push({
-          message: "The Dat for this app is missing " + METADATA_FILENAME,
-        });
-      } else {
-        global_errors.push(e);
-      }
-    },
-  });
+  .publishReplay(1)
+  .refCount();
+
+const readme$ = metadata$.switchMap(({ json, dat }) => {
+  console.log("attempt to read readme file " + json.readme);
+  return json.readme
+    ? readFileInDat(dat, json.readme, "utf-8").map(contents => ({
+        contents,
+        dat,
+      }))
+    : Rx.Observable.empty();
+});
+
+// Update global_state metadata for an app
+metadata$.subscribe({
+  next: ({ json, dat }) => {
+    const datHash = (dat.key as Buffer).toString("hex");
+    if (global_state[datHash]) {
+      global_state[datHash].name = json.name;
+      global_state[datHash].version = json.version;
+      global_state[datHash].readme = json.readme;
+    } else {
+      global_state[datHash] = {
+        key: datHash,
+        peers: 0,
+        name: json.name,
+        version: json.version,
+        readme: json.readme,
+      };
+    }
+  },
+  error: (e: Error) => {
+    if (e.message === `${METADATA_FILENAME} could not be found`) {
+      global_errors.push({
+        message: "The Dat for this app is missing " + METADATA_FILENAME,
+      });
+    } else {
+      global_errors.push(e);
+    }
+  },
+});
+
+// Update global_state readme for an app
+readme$.subscribe({
+  next: ({ contents, dat }) => {
+    const datHash = (dat.key as Buffer).toString("hex");
+    if (global_state[datHash]) {
+      global_state[datHash].readme = contents;
+    } else {
+      global_state[datHash] = {
+        key: datHash,
+        peers: 0,
+        readme: contents,
+      };
+    }
+  },
+  error: (e: Error) => {
+    if (e.message.endsWith("could not be found")) {
+      global_errors.push({
+        message: "The Dat for this app has a broken Readme file",
+      });
+    } else {
+      global_errors.push(e);
+    }
+  },
+});
 
 // Read cold stored Dats and start syncing them
 storagePath$

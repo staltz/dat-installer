@@ -1,10 +1,10 @@
 # Dat Installer
 
-> Install Android apps downloaded (and updated) through Dat
+> Download, install, and update Android apps through Dat
 
 ## Publishing an app
 
-Metadata file should have:
+Metadata file **must** be named `metadata.json` and should look like this:
 
 ```json
 {
@@ -12,6 +12,6 @@ Metadata file should have:
   "name": "My awesome app",
   "version": "1.10.2",
   "apk": "/app-release.apk",
-  "changelog": "/changelog.md"
+  "readme": "/readme.md"
 }
 ```

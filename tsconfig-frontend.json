@@ -18,7 +18,8 @@
   "files": [
     "src/frontend/main.ts",
     "src/frontend/styles.ts",
-    "src/typings/react-native-action-button.d.ts"
+    "src/typings/react-native-action-button.d.ts",
+    "src/typings/react-native-simple-markdown.d.ts"
   ],
   "exclude": ["node_modules"]
 }
