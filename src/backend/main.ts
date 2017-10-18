@@ -1,6 +1,12 @@
 import { Observable, Subject, ReplaySubject } from "rxjs";
 import { AppMetadata } from "../typings/messages";
-import { createDat, joinNetwork, looksLikeDatHash } from "./utils";
+import {
+  createDat,
+  joinNetwork,
+  trimProtocolPrefix,
+  looksLikeDatHash,
+  readFileInDat
+} from "./utils";
 import { Request, Response } from "express";
 const bodyParser = require("body-parser");
 const express = require("express");
@@ -15,25 +21,30 @@ const server = express();
 server.use(bodyParser.json());
 
 const storagePath$: ReplaySubject<string> = new Rx.ReplaySubject(1);
-const startDatSync$: Subject<string> = new Subject();
+const startDatSync$: Subject<string> = new Rx.Subject();
+const METADATA_FILENAME = "/metadata.json";
 
-type State = {
-  [key: string]: AppMetadata;
-};
-
-let global_state: State = {};
+let global_state: { [key: string]: AppMetadata } = {};
+let global_errors: Array<object> = [];
 
 server.get("/ping", (req: Request, res: Response) => {
   res.json({ msg: "pong" });
 });
 
 server.post("/setStoragePath", (req: Request, res: Response) => {
+  console.log("/setStoragePath", req.body.path);
   storagePath$.next(req.body.path);
   res.sendStatus(200);
 });
 
+server.get("/error", (req: Request, res: Response) => {
+  const err = global_errors.shift();
+  res.json(err);
+});
+
 server.post("/datSync", (req: Request, res: Response) => {
-  startDatSync$.next(req.body.datKey);
+  console.log("/datSync", req.body.datKey);
+  startDatSync$.next(trimProtocolPrefix(req.body.datKey));
   res.sendStatus(200);
 });
 
@@ -44,9 +55,84 @@ server.get("/allApps", (req: Request, res: Response) => {
   res.json({ apps: allApps });
 });
 
+// Create dat and sync, when given a new dat hash
+const dat$ = startDatSync$
+  .withLatestFrom(storagePath$)
+  .switchMap(arr => {
+    const datHash = arr[0];
+    const storagePath = arr[1];
+    const datKey = "dat://" + datHash;
+    const datPath = path.join(storagePath, datHash);
+    console.log("createDat", datPath, datKey);
+    return createDat(datPath, { key: datKey });
+  })
+  .switchMap(dat => joinNetwork(dat).mapTo(dat))
+  .publishReplay(1)
+  .refCount();
+
+// Update the number of connected peers
+dat$.subscribe({
+  next: dat => {
+    const datHash = (dat.key as Buffer).toString("hex");
+    console.log("network connected with ", dat.network.connected, "peers");
+    if (global_state[datHash]) {
+      global_state[datHash].peers = dat.network.connected;
+    } else {
+      global_state[datHash] = {
+        key: datHash,
+        peers: dat.network.connected
+      };
+    }
+  },
+  error: e => {
+    console.error(e);
+    global_errors.push(e);
+  }
+});
+
+// Read metadata to update global_state
+dat$
+  .switchMap(dat =>
+    readFileInDat(dat, METADATA_FILENAME).map(contents => ({ contents, dat }))
+  )
+  .subscribe({
+    next: ({ contents, dat }) => {
+      try {
+        const json = JSON.parse(contents);
+        const datHash = (dat.key as Buffer).toString("hex");
+        if (global_state[datHash]) {
+          global_state[datHash].name = json.name;
+          global_state[datHash].version = json.version;
+          global_state[datHash].changelog = json.changelog;
+        } else {
+          global_state[datHash] = {
+            key: datHash,
+            peers: 0,
+            name: json.name,
+            version: json.version,
+            changelog: json.changelog
+          };
+        }
+      } catch (e) {
+        console.error(e);
+        global_errors.push(e);
+      }
+    },
+    error: (e: Error) => {
+      if (e.message === `${METADATA_FILENAME} could not be found`) {
+        global_errors.push({
+          message: "The Dat for this app is missing " + METADATA_FILENAME
+        });
+      } else {
+        global_errors.push(e);
+      }
+    }
+  });
+
 // Read cold stored Dats and start syncing them
 storagePath$
   .take(1)
+  .do(x => console.log("storagePath exists, lets read everything"))
   .map(storagePath =>
     (fs.readdirSync(storagePath) as Array<string>)
       .filter(looksLikeDatHash)
@@ -58,34 +144,11 @@ storagePath$
   .switchMap(files => Rx.Observable.from(files))
   .subscribe({
     next: (datDir: string) => {
-      const parts = datDir.split("/");
-      const datHash = parts[parts.length - 1];
-      startDatSync$.next(datHash);
-    }
-  });
-
-// Start syncing Dats detected by the backend
-startDatSync$
-  .withLatestFrom(storagePath$)
-  .switchMap(arr => {
-    const datHash = arr[0];
-    const storagePath = arr[1];
-    const datKey = "dat://" + datHash;
-    const datPath = path.join(storagePath, datHash);
-    return createDat(datPath, { key: datKey });
-  })
-  .switchMap(dat => joinNetwork(dat).mapTo(dat))
-  .subscribe({
-    next: dat => {
-      const datKey = (dat.key as Buffer).toString("hex");
-      if (global_state[datKey]) {
-        global_state[datKey].peers = dat.network.connected;
-      } else {
-        global_state[datKey] = {
-          key: datKey,
-          peers: dat.network.connected
-        };
-      }
+      console.log("read dir " + datDir + " from fs and will dat sync it");
+      startDatSync$.next(trimProtocolPrefix(datDir));
+    },
+    error: e => {
+      global_errors.push(e);
     }
   });
 

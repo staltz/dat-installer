@@ -10,7 +10,7 @@
     "@types/superagent" "3.5.6"
     superagent "3.6.3"
 
-"@cycle/isolate@^3.1.0":
+"@cycle/isolate@>=3", "@cycle/isolate@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-3.1.0.tgz#fb1581750d413f80c230637e17fc248be7dfd16f"
 
@@ -20,7 +20,7 @@
   dependencies:
     "@cycle/run" "^3.1.0"
 
-"@cycle/run@3.x", "@cycle/run@^3.1.0", "@cycle/run@^3.3.0":
+"@cycle/run@*", "@cycle/run@3.x", "@cycle/run@^3.1.0", "@cycle/run@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@cycle/run/-/run-3.3.0.tgz#a00dd638e0e9349fcf0d7b7628f9f37309559b9f"
   dependencies:
@@ -1422,6 +1422,14 @@ cycle-native-navigation@^1.1.0:
   dependencies:
     "@cycle/native-screen" "1.0.0-rc.4"
     xstream "10.x"
+
+cycle-onionify@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cycle-onionify/-/cycle-onionify-4.0.0.tgz#9aeddd88dedf6fda9fbb98b1e79ab38810b7ddda"
+  dependencies:
+    "@cycle/isolate" ">=3"
+    "@cycle/run" "*"
+    xstream ">=10"
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -3804,9 +3812,9 @@ react-native-navigation@^1.1.236:
   dependencies:
     lodash "4.x.x"
 
-react-native-node@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-node/-/react-native-node-2.0.0.tgz#9001ed8c6a18201539d8d56c2521d2fcdc171230"
+react-native-node@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-node/-/react-native-node-2.1.1.tgz#a370b65051b04570285c60e53823b3560868cb1d"
   dependencies:
     cheerio "^1.0.0-rc.1"
     mkdirp "^0.5.1"
@@ -4959,7 +4967,7 @@ xstream@10.x:
   dependencies:
     symbol-observable "^1.0.2"
 
-"xstream@10.x || 11.x", xstream@^11.0.0:
+"xstream@10.x || 11.x", xstream@>=10, xstream@^11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/xstream/-/xstream-11.0.0.tgz#2018c3c4e573f76b62b9cf96a17a46876ab120e0"
   dependencies:
