@@ -7,7 +7,7 @@ import { navigatorStyle } from "./lib/styles";
 import main from "./lib/main";
 
 const { screenVNodeDriver, commandDriver } = makeSingleScreenNavDrivers(
-  ["DatInstaller.Central", "DatInstaller.Addition"],
+  ["DatInstaller.Central", "DatInstaller.Addition", "DatInstaller.Details"],
   {
     screen: {
       screen: "DatInstaller.Central",

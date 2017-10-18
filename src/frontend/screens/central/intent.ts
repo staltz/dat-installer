@@ -8,5 +8,9 @@ export default function intent(screenSource: ScreensSource) {
       .select("addApp")
       .events("press")
       .mapTo(null),
+
+    goToDetails$: screenSource.select("appList").events("pressApp") as Stream<{
+      datHash: string;
+    }>,
   };
 }

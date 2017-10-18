@@ -6,6 +6,7 @@ import {
   ScreensSource,
   Command,
   ShowModalCommand,
+  PushCommand,
 } from "cycle-native-navigation";
 import { AppMetadata } from "../../../typings/messages";
 import { navigatorStyle } from "../../styles";
@@ -66,13 +67,7 @@ function httpRequests(start$: Stream<null>): Stream<Request> {
   return xs.merge(pingReq$, setStoragePathReq$, allAppsReq$);
 }
 
-export default function central(sources: Sources): Sinks {
-  const httpActions = httpIntent(sources.http);
-  const actions = { ...intent(sources.screen), ...httpActions };
-  const reducer$ = model(actions as Actions);
-  const vdom$ = view(sources.onion.state$);
-  const request$ = httpRequests(httpActions.startAllowingOtherRequests$);
-
+function navigation(actions: Actions): Stream<Command> {
   const goToAddition$ = actions.goToAddition$.mapTo({
     type: "showModal",
     screen: "DatInstaller.Addition",
@@ -80,9 +75,31 @@ export default function central(sources: Sources): Sinks {
     navigatorStyle: navigatorStyle,
   } as ShowModalCommand);
 
+  const goToDetails$ = actions.goToDetails$.map(
+    ev =>
+      ({
+        type: "push",
+        screen: "DatInstaller.Details",
+        title: "",
+        navigatorStyle: navigatorStyle,
+        passProps: ev,
+      } as PushCommand),
+  );
+
+  return xs.merge(goToAddition$, goToDetails$);
+}
+
+export default function central(sources: Sources): Sinks {
+  const httpActions = httpIntent(sources.http);
+  const actions = { ...intent(sources.screen), ...httpActions };
+  const navCommand$ = navigation(actions as Actions);
+  const reducer$ = model(actions as Actions);
+  const vdom$ = view(sources.onion.state$);
+  const request$ = httpRequests(httpActions.startAllowingOtherRequests$);
+
   return {
     screen: vdom$,
-    navCommand: goToAddition$,
+    navCommand: navCommand$,
     onion: reducer$,
     http: request$,
   };

@@ -1,6 +1,12 @@
 import xs, { Stream } from "xstream";
 import { PureComponent } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableNativeFeedback,
+} from "react-native";
 import { ScreenVNode } from "cycle-native-navigation";
 import { h } from "@cycle/native-screen";
 import ActionButton from "react-native-action-button";
@@ -112,85 +118,88 @@ const styles = StyleSheet.create({
   },
 });
 
-const emptyListVDOM = h(View, { style: styles.emptyList }, [
-  h(Text, { style: styles.emptyListTitle }, "Install an Android app!"),
-  h(
-    Text,
-    { style: styles.emptyListSubtitle },
-    "Press this button to get started",
-  ),
-]);
-
-/**
- * We need this in order to know the array length inside renderItem()
- * so that the last list item is rendered with "last item" styles.
- */
-type HackyTotalLength = {
-  _hack: number;
-};
-
-function renderItem({
-  item,
-  index,
-}: {
-  item: AppMetadata & HackyTotalLength;
-  index: number;
-}) {
-  const style = [styles.item];
-  if (index === 0) {
-    style.push(styles.firstItem);
-  }
-  if (index === item._hack - 1) {
-    style.push(styles.lastItem);
-  }
-
-  return h(View, { style }, [
-    h(View, { style: styles.logoPlaceholder }),
-    h(View, { style: styles.appDetails }, [
-      h(Text, { style: styles.appTitle }, item.name ? item.name : item.key),
-      h(
-        Text,
-        {
-          style: styles.appSubtitle,
-          numberOfLines: 1,
-          ellipsizeMode: "middle",
-        },
-        item.version ? item.version : String(item.peers),
-      ),
-    ]),
-  ]);
-}
-
 class Separator extends PureComponent<any> {
   public render() {
     return h(View, { style: styles.separator });
   }
 }
 
-export default function view(state$: Stream<State>): Stream<ScreenVNode> {
-  return state$.map(state => {
-    for (let i = 0, n = state.apps.length; i < n; i++) {
-      (state.apps[i] as AppMetadata & HackyTotalLength)._hack = n;
-    }
+type AppListProps = {
+  data: Array<AppMetadata>;
+  onPressApp?: (ev: { datHash: string }) => void;
+};
 
-    return {
-      screen: "DatInstaller.Central",
-      vdom: h(View, { style: styles.container }, [
-        state.apps.length === 0
-          ? emptyListVDOM
-          : h(FlatList, {
-              style: styles.list,
-              contentContainerStyle: styles.listContent,
-              data: state.apps,
-              keyExtractor: (item: AppMetadata) => item.key,
-              ItemSeparatorComponent: Separator,
-              renderItem: renderItem,
-            }),
-        h(ActionButton, {
-          selector: "addApp",
-          buttonColor: "rgb(25, 158, 51)",
-        }),
-      ]),
-    };
-  });
+class AppList extends PureComponent<AppListProps> {
+  public render() {
+    const data = this.props.data;
+    const onPressApp = this.props.onPressApp;
+
+    if (data.length) {
+      return h(FlatList, {
+        style: styles.list,
+        contentContainerStyle: styles.listContent,
+        data,
+        keyExtractor: (item: AppMetadata) => item.key,
+        ItemSeparatorComponent: Separator,
+        renderItem: ({ item, index }: { item: AppMetadata; index: number }) => {
+          const style = [styles.item];
+          if (index === 0) style.push(styles.firstItem);
+          if (index === data.length - 1) style.push(styles.lastItem);
+
+          return h(
+            TouchableNativeFeedback,
+            {
+              background: TouchableNativeFeedback.SelectableBackground(),
+              onPress: () => {
+                if (onPressApp) onPressApp({ datHash: item.key });
+              },
+            },
+            [
+              h(View, { style }, [
+                h(View, { style: styles.logoPlaceholder }),
+                h(View, { style: styles.appDetails }, [
+                  h(
+                    Text,
+                    { style: styles.appTitle },
+                    item.name ? item.name : item.key,
+                  ),
+                  h(
+                    Text,
+                    {
+                      style: styles.appSubtitle,
+                      numberOfLines: 1,
+                      ellipsizeMode: "middle",
+                    },
+                    item.version ? item.version : String(item.peers),
+                  ),
+                ]),
+              ]),
+            ],
+          );
+        },
+      });
+    } else {
+      return h(View, { style: styles.emptyList }, [
+        h(Text, { style: styles.emptyListTitle }, "Install an Android app!"),
+        h(
+          Text,
+          { style: styles.emptyListSubtitle },
+          "Press this button to get started",
+        ),
+      ]);
+    }
+  }
+}
+
+export default function view(state$: Stream<State>): Stream<ScreenVNode> {
+  return state$.map(state => ({
+    screen: "DatInstaller.Central",
+    vdom: h(View, { style: styles.container }, [
+      h(AppList, { selector: "appList", data: state.apps }),
+      h(ActionButton, {
+        selector: "addApp",
+        buttonColor: "rgb(25, 158, 51)",
+      }),
+    ]),
+  }));
 }

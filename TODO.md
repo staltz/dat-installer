@@ -1,6 +1,6 @@
 # Next
 
-- AppDetails screen
+- Display readme with markdown, on details screen
 - Addition submission goes back to Central
 
 # Must

@@ -4,6 +4,7 @@ import { AppMetadata } from "../../../typings/messages";
 
 export type Actions = {
   goToAddition$: Stream<null>;
+  goToDetails$: Stream<{ datHash: string }>;
   updateApps$: Stream<Array<AppMetadata>>;
 };
 
