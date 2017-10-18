@@ -24,6 +24,7 @@ type Sinks = {
   navCommand: Stream<Command>;
   onion: Stream<Reducer<State>>;
   http: Stream<RequestOptions>;
+  installApk: Stream<string>;
 };
 
 type State = {
@@ -113,5 +114,6 @@ export default function main(sources: Sources): Sinks {
     navCommand: navCommand$,
     onion: reducer$,
     http: request$,
+    installApk: detailsSinks.installApk,
   };
 }

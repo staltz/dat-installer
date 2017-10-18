@@ -13,6 +13,12 @@ export function readFileInDat(
   )(file, encoding);
 }
 
+export function downloadFileFromDat(dat: any, file: string): Observable<null> {
+  return Observable.bindNodeCallback<string, null>(
+    dat.archive.download.bind(dat.archive),
+  )(file);
+}
+
 export function joinNetwork(dat: any): Observable<any> {
   return Observable.bindNodeCallback<any>(dat.joinNetwork.bind(dat))();
 }

@@ -12,7 +12,7 @@
     "target": "es2015",
     "types": ["node"],
     "outDir": "./rnnodeapp",
-    "lib": ["es5"]
+    "lib": ["es5", "es2015"]
   },
   "files": ["src/backend/main.ts"],
   "exclude": ["node_modules", "src/typings/messages.d.ts"]

@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-apk-installer')
     compile project(':react-native-node')
     compile project(':react-native-navigation')
     compile project(':react-native-fs')

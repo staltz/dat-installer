@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-apk-installer/android/src/main/java/com/cnull/apkinstaller/ApkInstallerPackage.java b/node_modules/react-native-apk-installer/android/src/main/java/com/cnull/apkinstaller/ApkInstallerPackage.java
+index f2e14ed..dd3996e 100644
+--- a/node_modules/react-native-apk-installer/android/src/main/java/com/cnull/apkinstaller/ApkInstallerPackage.java
++++ b/node_modules/react-native-apk-installer/android/src/main/java/com/cnull/apkinstaller/ApkInstallerPackage.java
+@@ -12,11 +12,6 @@ import java.util.List;
+ 
+ public class ApkInstallerPackage implements ReactPackage {
+ 
+-    @Override
+-    public List<Class<? extends JavaScriptModule>> createJSModules() {
+-        return Collections.emptyList();
+-    }
+-
+     @Override
+     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+         return Collections.emptyList();

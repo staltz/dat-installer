@@ -5,6 +5,7 @@ import {
   joinNetwork,
   trimProtocolPrefix,
   looksLikeDatHash,
+  downloadFileFromDat,
   readFileInDat,
 } from "./utils";
 import { Request, Response } from "express";
@@ -117,6 +118,12 @@ const readme$ = metadata$.switchMap(({ json, dat }) => {
     : Rx.Observable.empty();
 });
 
+const apk$ = metadata$.switchMap(({ json, dat }) => {
+  const apkFilename: string = json.apk;
+  console.log("attempt to download apk file " + apkFilename);
+  return downloadFileFromDat(dat, json.apk).mapTo({ dat, apkFilename });
+});
+
 // Update global_state metadata for an app
 metadata$.subscribe({
   next: ({ json, dat }) => {
@@ -164,6 +171,32 @@ readme$.subscribe({
     if (e.message.endsWith("could not be found")) {
       global_errors.push({
         message: "The Dat for this app has a broken Readme file",
+      });
+    } else {
+      global_errors.push(e);
+    }
+  },
+});
+
+// Update global_state apk full path for an app
+apk$.withLatestFrom(storagePath$).subscribe({
+  next: ([{ dat, apkFilename }, storagePath]) => {
+    const datHash = (dat.key as Buffer).toString("hex");
+    const apkFullPath = path.join(storagePath, datHash, apkFilename);
+    if (global_state[datHash]) {
+      global_state[datHash].apkFullPath = apkFullPath;
+    } else {
+      global_state[datHash] = {
+        key: datHash,
+        peers: 0,
+        readme: apkFullPath,
+      };
+    }
+  },
+  error: (e: Error) => {
+    if (e.message.endsWith("could not be found")) {
+      global_errors.push({
+        message: "The Dat for this app has a broken APK file",
       });
     } else {
       global_errors.push(e);

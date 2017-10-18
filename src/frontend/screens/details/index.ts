@@ -1,8 +1,15 @@
 import xs, { Stream } from "xstream";
+import sampleCombine from "xstream/extra/sampleCombine";
 import { StateSource, Reducer } from "cycle-onionify";
 import { HTTPSource, RequestOptions } from "@cycle/http";
 import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableNativeFeedback,
+} from "react-native";
 import { createElement } from "react";
 import { h } from "@cycle/native-screen";
 import { AppMetadata } from "../../../typings/messages";
@@ -19,6 +26,7 @@ export type Sinks = {
   navCommand: Stream<Command>;
   onion: Stream<Reducer<State>>;
   http: Stream<RequestOptions>;
+  installApk: Stream<string>;
 };
 
 export type State = {
@@ -62,6 +70,29 @@ const styles = StyleSheet.create({
 
   readmeContainer: {
     marginTop: 15,
+  },
+
+  installContainer: {
+    width: 120,
+    alignSelf: "flex-end",
+    marginLeft: 20,
+    marginRight: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
+    backgroundColor: "#199E33",
+  },
+
+  installText: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#ffffff",
   },
 });
 
@@ -282,7 +313,15 @@ const rules = {
 };
 
 export default function details(sources: Sources): Sinks {
-  const vdom$ = sources.onion.state$.map(state => ({
+  const state$ = sources.onion.state$;
+
+  const installApk$ = sources.screen
+    .select("install")
+    .events("press")
+    .compose(sampleCombine(state$))
+    .map(([_, state]) => state.app.apkFullPath as string);
+
+  const vdom$ = state$.map(state => ({
     screen: "DatInstaller.Details",
     vdom: h(View, { style: styles.container }, [
       h(View, { style: styles.header }, [
@@ -304,6 +343,18 @@ export default function details(sources: Sources): Sinks {
           ),
         ]),
       ]),
+      h(
+        TouchableNativeFeedback,
+        {
+          selector: "install",
+          background: TouchableNativeFeedback.SelectableBackground(),
+        },
+        [
+          h(View, { style: styles.installContainer }, [
+            h(Text, { style: styles.installText }, "Install"),
+          ]),
+        ],
+      ),
       h(View, { style: styles.readmeContainer }, [
         h(Markdown, { styles: mdStyles, rules }, state.app.readme),
       ]),
@@ -315,5 +366,6 @@ export default function details(sources: Sources): Sinks {
     navCommand: xs.never(),
     onion: xs.never(),
     http: xs.never(),
+    installApk: installApk$,
   };
 }
