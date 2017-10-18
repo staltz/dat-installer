@@ -2,7 +2,12 @@ import xs, { Stream } from "xstream";
 import sampleCombine from "xstream/extra/sampleCombine";
 import { StateSource, Reducer } from "cycle-onionify";
 import { HTTPSource, RequestOptions } from "@cycle/http";
-import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
+import {
+  ScreenVNode,
+  ScreensSource,
+  Command,
+  DismissModalCommand,
+} from "cycle-native-navigation";
 import intent from "./intent";
 import model, { State } from "./model";
 import view from "./view";
@@ -35,13 +40,17 @@ export default function addition(sources: Sources): Sinks {
       send: { datKey: state.textInput },
     }));
 
+  const dismissThisScreen$ = request$.mapTo({
+    type: "dismissModal",
+  } as DismissModalCommand);
+
   const reducer$ = model(actions);
 
   const vdom$ = view(sources.onion.state$);
 
   return {
     screen: vdom$,
-    navCommand: xs.never(),
+    navCommand: dismissThisScreen$,
     onion: reducer$,
     http: request$,
   };

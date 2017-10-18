@@ -1,13 +1,12 @@
 # Next
 
-- Addition submission goes back to Central
-
-# Must
-
 - Actually install apk
   - https://www.npmjs.com/package/react-native-apk-installer
   - https://stackoverflow.com/questions/26884956/how-to-install-update-remove-apk-using-packageinstaller-class-in-android-l
   - Install button on each list row
+
+# Must
+
 - Extract app logo from apk
 - Render circular progress bar around the logo
 
