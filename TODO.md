@@ -1,7 +1,6 @@
 # Next
 
 - Addition submission goes back to Central
-- Improve GUI of Addition screen
 
 # Must
 

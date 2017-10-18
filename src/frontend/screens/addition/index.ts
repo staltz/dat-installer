@@ -28,6 +28,7 @@ export default function addition(sources: Sources): Sinks {
 
   const request$ = actions.submit$
     .compose(sampleCombine(state$))
+    .filter(([_, state]) => state.textInput.length >= 64)
     .map(([_, state]) => ({
       url: "/datSync",
       method: "POST",
