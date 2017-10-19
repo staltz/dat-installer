@@ -50,10 +50,7 @@ server.post("/datSync", (req: Request, res: Response) => {
 });
 
 server.get("/allApps", (req: Request, res: Response) => {
-  const allApps = Object.keys(global_state)
-    .filter(looksLikeDatHash)
-    .map(key => global_state[key]);
-  res.json({ apps: allApps });
+  res.json({ apps: global_state });
 });
 
 // Create dat and sync, when given a new dat hash
@@ -118,30 +115,21 @@ const readme$ = metadata$.switchMap(({ json, dat }) => {
     : Rx.Observable.empty();
 });
 
-const apk$ = metadata$.switchMap(({ json, dat }) => {
-  const apkFilename: string = json.apk;
-  console.log("attempt to download apk file " + apkFilename);
-  return downloadFileFromDat(dat, json.apk).mapTo({ dat, apkFilename });
-});
+const apkFullPath$ = metadata$
+  .switchMap(({ json, dat }) => {
+    const apkFilename: string = json.apk;
+    console.log("attempt to download apk file " + apkFilename);
+    return downloadFileFromDat(dat, json.apk).mapTo({ dat, apkFilename });
+  })
+  .withLatestFrom(storagePath$)
+  .map(([{ dat, apkFilename }, storagePath]) => {
+    const datHash = (dat.key as Buffer).toString("hex");
+    const apkFullPath: string = path.join(storagePath, datHash, apkFilename);
+    return { apkFullPath, datHash };
+  });
 
 // Update global_state metadata for an app
 metadata$.subscribe({
-  next: ({ json, dat }) => {
-    const datHash = (dat.key as Buffer).toString("hex");
-    if (global_state[datHash]) {
-      global_state[datHash].name = json.name;
-      global_state[datHash].version = json.version;
-      global_state[datHash].readme = json.readme;
-    } else {
-      global_state[datHash] = {
-        key: datHash,
-        peers: 0,
-        name: json.name,
-        version: json.version,
-        readme: json.readme,
-      };
-    }
-  },
   error: (e: Error) => {
     if (e.message === `${METADATA_FILENAME} could not be found`) {
       global_errors.push({
@@ -179,10 +167,8 @@ readme$.subscribe({
 });
 
 // Update global_state apk full path for an app
-apk$.withLatestFrom(storagePath$).subscribe({
-  next: ([{ dat, apkFilename }, storagePath]) => {
-    const datHash = (dat.key as Buffer).toString("hex");
-    const apkFullPath = path.join(storagePath, datHash, apkFilename);
+apkFullPath$.subscribe({
+  next: ({ apkFullPath, datHash }) => {
     if (global_state[datHash]) {
       global_state[datHash].apkFullPath = apkFullPath;
     } else {

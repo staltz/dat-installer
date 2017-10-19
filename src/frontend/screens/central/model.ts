@@ -5,22 +5,30 @@ import { AppMetadata } from "../../../typings/messages";
 export type Actions = {
   goToAddition$: Stream<null>;
   goToDetails$: Stream<{ datHash: string }>;
-  updateApps$: Stream<Array<AppMetadata>>;
+  updateApps$: Stream<{ [k: string]: AppMetadata }>;
 };
 
 export type State = {
-  apps: Array<AppMetadata>;
+  apps: {
+    [datHash: string]: AppMetadata;
+  };
 };
 
 export default function model(actions: Actions): Stream<Reducer<State>> {
   const initReducer$ = xs.of(function initReducer(prev: State): State {
-    return prev || { apps: [] };
+    return prev || { apps: {} };
   });
 
   const updateAppsReducer$ = actions.updateApps$.map(
     apps =>
       function updateAppsReducer(prev: State): State {
-        return { ...prev, apps };
+        const next: State = { ...prev };
+        Object.keys(apps).forEach(key => {
+          if (!next.apps[key]) {
+            next.apps[key] = apps[key];
+          }
+        });
+        return next;
       },
   );
 

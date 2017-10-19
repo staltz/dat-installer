@@ -3,6 +3,7 @@ package com.datinstaller;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNAndroidPackagemanagerPackage;
 import com.cnull.apkinstaller.ApkInstallerPackage;
 import com.staltz.reactnativenode.RNNodePackage;
 import com.rnfs.RNFSPackage;
@@ -28,7 +29,8 @@ public class MainApplication extends NavigationApplication {
       return Arrays.<ReactPackage>asList(
             new RNFSPackage(),
             new RNNodePackage(),
-            new ApkInstallerPackage()
+            new ApkInstallerPackage(),
+            new RNAndroidPackagemanagerPackage()
       );
     }
 

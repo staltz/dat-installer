@@ -12,11 +12,13 @@ import { AppMetadata } from "../typings/messages";
 import central, { State as CentralState } from "./screens/central";
 import addition, { State as AdditionState } from "./screens/addition";
 import details, { State as DetailsState } from "./screens/details";
+import { InfoRes, InfoReq } from "./drivers/package-info";
 
 type Sources = {
   screen: ScreensSource;
   onion: StateSource<State>;
   http: HTTPSource;
+  packageInfo: Stream<InfoRes>;
 };
 
 type Sinks = {
@@ -24,11 +26,14 @@ type Sinks = {
   navCommand: Stream<Command>;
   onion: Stream<Reducer<State>>;
   http: Stream<RequestOptions>;
+  packageInfo: Stream<InfoReq>;
   installApk: Stream<string>;
 };
 
 type State = {
-  apps: Array<AppMetadata>;
+  apps: {
+    [datHash: string]: AppMetadata;
+  };
   selectedApp: string;
   addition: AdditionState;
 };
@@ -40,14 +45,58 @@ const centralLens: Lens<State, CentralState> = {
   },
 };
 
-// Read-only
+function packageInfo(state$: Stream<State>): Stream<InfoReq> {
+  return state$
+    .map(state => {
+      const apps = state.apps;
+      const requests = Object.keys(apps)
+        .filter(key => !apps[key].label && apps[key].apkFullPath)
+        .map(key => ({ datHash: key, path: apps[key].apkFullPath } as InfoReq));
+      return xs.fromArray(requests);
+    })
+    .flatten();
+}
+
+function model(
+  infoRes$: Stream<InfoRes>,
+  navCommand$: Stream<Command>,
+): Stream<Reducer<State>> {
+  const setSelectedAppReducer$ = navCommand$
+    .filter(
+      command =>
+        command.type === "push" &&
+        (command as PushCommand).screen === "DatInstaller.Details",
+    )
+    .map(
+      (command: PushCommand) =>
+        function setSelectedAppReducer(prev: State): State {
+          return { ...prev, selectedApp: command.passProps.datHash };
+        },
+    );
+
+  const packageInfoReducer$ = infoRes$.map(
+    infoRes =>
+      function packageInfoReducer(prev: State): State {
+        const key = infoRes.datHash;
+        const nextApps = { ...prev.apps };
+        if (nextApps[key]) {
+          nextApps[key].label = infoRes.info.label;
+          nextApps[key].package = infoRes.info.package;
+          nextApps[key].version = infoRes.info.versionName;
+        }
+        return { ...prev, apps: nextApps };
+      },
+  );
+
+  return xs.merge(setSelectedAppReducer$, packageInfoReducer$);
+}
+
 const detailsLens: Lens<State, DetailsState> = {
   get: (parent: State) => ({
-    app: parent.apps.find(app => app.key === parent.selectedApp) || {
-      key: "",
-      peers: 0,
-    },
+    app: parent.apps[parent.selectedApp] || { key: "", peers: 0 },
   }),
+
+  // Read-only
   set: (parent: State, child: DetailsState) => {
     return parent;
   },
@@ -82,18 +131,8 @@ export default function main(sources: Sources): Sinks {
     detailsSinks.navCommand,
   );
 
-  const setSelectedAppReducer$ = navCommand$
-    .filter(
-      command =>
-        command.type === "push" &&
-        (command as PushCommand).screen === "DatInstaller.Details",
-    )
-    .map(
-      (command: PushCommand) =>
-        function setSelectedAppReducer(prev: State): State {
-          return { ...prev, selectedApp: command.passProps.datHash };
-        },
-    );
+  const mainReducer$ = model(sources.packageInfo, navCommand$);
+  const infoReq$ = packageInfo(sources.onion.state$);
 
   const request$ = xs
     .merge(centralSinks.http, additionSinks.http, detailsSinks.http)
@@ -103,10 +142,10 @@ export default function main(sources: Sources): Sinks {
     }));
 
   const reducer$ = xs.merge(
+    mainReducer$,
     centralSinks.onion,
     additionSinks.onion,
     detailsSinks.onion,
-    setSelectedAppReducer$,
   );
 
   return {
@@ -114,6 +153,7 @@ export default function main(sources: Sources): Sinks {
     navCommand: navCommand$,
     onion: reducer$,
     http: request$,
+    packageInfo: infoReq$,
     installApk: detailsSinks.installApk,
   };
 }

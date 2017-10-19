@@ -1,6 +1,6 @@
 # Next
 
-- Extract from apk: app logo, name and version
+- Extract from apk: app logo (drawable)
 - Add GPL license and license comments
 
 # Must

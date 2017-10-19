@@ -125,13 +125,18 @@ class Separator extends PureComponent<any> {
 }
 
 type AppListProps = {
-  data: Array<AppMetadata>;
+  apps: {
+    [datHash: string]: AppMetadata;
+  };
   onPressApp?: (ev: { datHash: string }) => void;
 };
 
 class AppList extends PureComponent<AppListProps> {
   public render() {
-    const data = this.props.data;
+    const apps = this.props.apps;
+    const data = Object.keys(apps)
+      .filter(key => key.length >= 64)
+      .map(key => apps[key]);
     const onPressApp = this.props.onPressApp;
 
     if (data.length) {
@@ -165,7 +170,7 @@ class AppList extends PureComponent<AppListProps> {
                       numberOfLines: 1,
                       ellipsizeMode: "middle",
                     },
-                    item.name ? item.name : item.key,
+                    item.label ? item.label : item.key,
                   ),
                   h(
                     Text,
@@ -199,7 +204,7 @@ export default function view(state$: Stream<State>): Stream<ScreenVNode> {
   return state$.map(state => ({
     screen: "DatInstaller.Central",
     vdom: h(View, { style: styles.container }, [
-      h(AppList, { selector: "appList", data: state.apps }),
+      h(AppList, { selector: "appList", apps: state.apps }),
       h(ActionButton, {
         selector: "addApp",
         buttonColor: "rgb(25, 158, 51)",

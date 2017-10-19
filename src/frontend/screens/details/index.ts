@@ -328,7 +328,7 @@ export default function details(sources: Sources): Sinks {
           h(
             Text,
             { style: styles.name, numberOfLines: 1, ellipsizeMode: "middle" },
-            state.app.name,
+            state.app.label ? state.app.label : state.app.key,
           ),
           h(
             Text,

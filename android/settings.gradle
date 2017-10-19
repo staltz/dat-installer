@@ -1,4 +1,6 @@
 rootProject.name = 'DatInstaller'
+include ':react-native-android-packagemanager'
+project(':react-native-android-packagemanager').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-packagemanager/android')
 include ':react-native-apk-installer'
 project(':react-native-apk-installer').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-apk-installer/android')
 include ':react-native-node'

@@ -18,6 +18,9 @@
   "files": [
     "src/frontend/main.ts",
     "src/frontend/styles.ts",
+    "src/frontend/drivers/apk-installer.ts",
+    "src/frontend/drivers/package-info.ts",
+    "src/typings/react-native-apk-installer.d.ts",
     "src/typings/react-native-action-button.d.ts",
     "src/typings/react-native-simple-markdown.d.ts"
   ],
