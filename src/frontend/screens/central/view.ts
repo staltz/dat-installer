@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 
   appTitle: {
     fontSize: 16,
-    maxWidth: 160,
+    maxWidth: 180,
     color: "#202020",
   },
 
@@ -160,7 +160,11 @@ class AppList extends PureComponent<AppListProps> {
                 h(View, { style: styles.appDetails }, [
                   h(
                     Text,
-                    { style: styles.appTitle },
+                    {
+                      style: styles.appTitle,
+                      numberOfLines: 1,
+                      ellipsizeMode: "middle",
+                    },
                     item.name ? item.name : item.key,
                   ),
                   h(
