@@ -1,7 +1,6 @@
 # Next
 
 - Extract from apk: app logo, name and version
-- Fix install button marginRight
 - Add GPL license and license comments
 
 # Must

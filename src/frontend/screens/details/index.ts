@@ -75,8 +75,6 @@ const styles = StyleSheet.create({
   installContainer: {
     width: 120,
     alignSelf: "flex-end",
-    marginLeft: 20,
-    marginRight: 20,
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
