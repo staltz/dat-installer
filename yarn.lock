@@ -3980,10 +3980,6 @@ react-native-action-button@^2.8.0:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-android-packagemanager@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-android-packagemanager/-/react-native-android-packagemanager-1.1.1.tgz#694ed8c00dc2b0bbe8aae8e0414a583b8b899177"
-
 react-native-apk-installer@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/react-native-apk-installer/-/react-native-apk-installer-0.0.2.tgz#48c351e59120e247645e0779aa04264f0c0e127b"
