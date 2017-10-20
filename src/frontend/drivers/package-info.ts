@@ -1,4 +1,5 @@
 import xs, { Stream } from "xstream";
+import flattenConcurrently from "xstream/extra/flattenConcurrently";
 import RNAndroidPM, { PackageInfo } from "react-native-android-packagemanager";
 
 export type InfoReq = {
@@ -20,7 +21,7 @@ export default function packageInfoDriver(
         .fromPromise(RNAndroidPM.getPackageInfo(req.path))
         .map(info => ({ datHash: req.datHash, info })),
     )
-    .flatten()
+    .compose(flattenConcurrently)
     .remember();
 
   source.addListener({
