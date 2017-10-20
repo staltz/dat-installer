@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
   FlatList,
   TouchableNativeFeedback,
 } from "react-native";
@@ -80,6 +81,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     backgroundColor: "#5a88c4",
     borderRadius: 6,
+  },
+
+  logo: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
   },
 
   emptyList: {
@@ -161,7 +168,14 @@ class AppList extends PureComponent<AppListProps> {
             },
             [
               h(View, { style }, [
-                h(View, { style: styles.logoPlaceholder }),
+                item.package
+                  ? h(Image, {
+                      source: {
+                        uri: `http://localhost:8182/icon/${item.package}.png`,
+                      },
+                      style: styles.logo,
+                    })
+                  : h(View, { style: styles.logoPlaceholder }),
                 h(View, { style: styles.appDetails }, [
                   h(
                     Text,

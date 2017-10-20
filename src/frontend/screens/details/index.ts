@@ -6,6 +6,7 @@ import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
 import {
   StyleSheet,
   Text,
+  Image,
   View,
   FlatList,
   TouchableNativeFeedback,
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     marginRight: 10,
-    backgroundColor: "#5a88c4",
     borderRadius: 6,
   },
 
@@ -323,7 +323,12 @@ export default function details(sources: Sources): Sinks {
     screen: "DatInstaller.Details",
     vdom: h(View, { style: styles.container }, [
       h(View, { style: styles.header }, [
-        h(View, { style: styles.logo }),
+        h(Image, {
+          source: {
+            uri: `http://localhost:8182/icon/${state.app.package}.png`,
+          },
+          style: styles.logo,
+        }),
         h(View, { style: styles.details }, [
           h(
             Text,

@@ -53,6 +53,28 @@ server.get("/allApps", (req: Request, res: Response) => {
   res.json({ apps: global_state });
 });
 
+server.get("/icon/:png", (req: Request, res: Response) => {
+  storagePath$.subscribe({
+    next: storagePath => {
+      var pngFile = path.join(storagePath, "icons", req.params.png);
+      var stream = fs.createReadStream(pngFile);
+      stream.on("open", function() {
+        res.set("Content-Type", "image/png");
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept",
+        );
+        stream.pipe(res);
+      });
+      stream.on("error", function() {
+        res.set("Content-Type", "text/plain");
+        res.status(404).end("Not found");
+      });
+    },
+  });
+});
+
 // Create dat and sync, when given a new dat hash
 const dat$ = startDatSync$
   .withLatestFrom(storagePath$)

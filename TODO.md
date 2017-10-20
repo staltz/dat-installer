@@ -1,7 +1,8 @@
 # Next
 
-- Extract from apk: app logo (drawable)
 - Add GPL license and license comments
+- Add more README, publish real MMMMM with nice metadata.json
+- Add GitHub issue and PR template
 
 # Must
 
