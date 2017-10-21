@@ -1,5 +1,6 @@
 # Next
 
+- Stop and start react-native-node backend
 - Add GPL license and license comments
 - Add more README, publish real MMMMM with nice metadata.json
 
@@ -11,6 +12,7 @@
 
 # Should
 
+- Check that metadata.json convention field matches expected
 - Show install button also on list item
 - Render banner at the top, to show errors
 - Remove app

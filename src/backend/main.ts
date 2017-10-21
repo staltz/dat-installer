@@ -78,15 +78,15 @@ server.get("/icon/:png", (req: Request, res: Response) => {
 // Create dat and sync, when given a new dat hash
 const dat$ = startDatSync$
   .withLatestFrom(storagePath$)
-  .switchMap(arr => {
+  .concatMap(arr => {
     const datHash = arr[0];
     const storagePath = arr[1];
     const datKey = "dat://" + datHash;
     const datPath = path.join(storagePath, datHash);
     console.log("createDat", datPath, datKey);
-    return createDat(datPath, { key: datKey });
+    return createDat(datPath, { key: datKey }).take(1);
   })
-  .switchMap(dat => joinNetwork(dat).mapTo(dat))
+  .mergeMap(dat => joinNetwork(dat).mapTo(dat))
   .publishReplay(1)
   .refCount();
 
@@ -118,7 +118,7 @@ dat$.subscribe({
 // Read metadata to update global_state
 const metadata$ = dat$
   .do(x => console.log("attempt to read " + METADATA_FILENAME + " file"))
-  .switchMap(dat =>
+  .mergeMap(dat =>
     readFileInDat(dat, METADATA_FILENAME, "utf-8").map(contents => ({
       json: JSON.parse(contents),
       dat,
@@ -127,7 +127,7 @@ const metadata$ = dat$
   .publishReplay(1)
   .refCount();
 
-const readme$ = metadata$.switchMap(({ json, dat }) => {
+const readme$ = metadata$.mergeMap(({ json, dat }) => {
   console.log("attempt to read readme file " + json.readme);
   return json.readme
     ? readFileInDat(dat, json.readme, "utf-8").map(contents => ({
@@ -138,7 +138,7 @@ const readme$ = metadata$.switchMap(({ json, dat }) => {
 });
 
 const apkFullPath$ = metadata$
-  .switchMap(({ json, dat }) => {
+  .mergeMap(({ json, dat }) => {
     const apkFilename: string = json.apk;
     console.log("attempt to fetch APK file " + apkFilename);
     return readFileFromDat(dat, apkFilename).mapTo({ dat, apkFilename });
@@ -224,7 +224,7 @@ storagePath$
         return fs.lstatSync(fullPath).isDirectory();
       }),
   )
-  .switchMap(files => Rx.Observable.from(files))
+  .mergeMap(files => Rx.Observable.from(files))
   .subscribe({
     next: (datDir: string) => {
       console.log("read dir " + datDir + " from fs and will dat sync it");
