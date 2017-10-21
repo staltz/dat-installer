@@ -1,4 +1,5 @@
 import xs, { Stream } from "xstream";
+import flattenConcurrently from "xstream/extra/flattenConcurrently";
 import isolate from "@cycle/isolate";
 import { HTTPSource, RequestOptions } from "@cycle/http";
 import { StateSource, Reducer, Lens } from "cycle-onionify";
@@ -40,7 +41,7 @@ function packageInfo(state$: Stream<State>): Stream<InfoReq> {
         .map(key => ({ datHash: key, path: apps[key].apkFullPath } as InfoReq));
       return xs.fromArray(requests);
     })
-    .flatten();
+    .compose(flattenConcurrently);
 }
 
 export default function main(sources: Sources): Sinks {

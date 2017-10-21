@@ -5,7 +5,7 @@ import {
   joinNetwork,
   trimProtocolPrefix,
   looksLikeDatHash,
-  downloadFileFromDat,
+  readFileFromDat,
   readFileInDat,
 } from "./utils";
 import { Request, Response } from "express";
@@ -58,13 +58,13 @@ server.get("/icon/:png", (req: Request, res: Response) => {
     next: storagePath => {
       var pngFile = path.join(storagePath, "icons", req.params.png);
       var stream = fs.createReadStream(pngFile);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept",
+      );
       stream.on("open", function() {
         res.set("Content-Type", "image/png");
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header(
-          "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept",
-        );
         stream.pipe(res);
       });
       stream.on("error", function() {
@@ -140,8 +140,8 @@ const readme$ = metadata$.switchMap(({ json, dat }) => {
 const apkFullPath$ = metadata$
   .switchMap(({ json, dat }) => {
     const apkFilename: string = json.apk;
-    console.log("attempt to download apk file " + apkFilename);
-    return downloadFileFromDat(dat, json.apk).mapTo({ dat, apkFilename });
+    console.log("attempt to fetch APK file " + apkFilename);
+    return readFileFromDat(dat, apkFilename).mapTo({ dat, apkFilename });
   })
   .withLatestFrom(storagePath$)
   .map(([{ dat, apkFilename }, storagePath]) => {
