@@ -141,6 +141,7 @@ const apkFullPath$ = metadata$
   .mergeMap(({ json, dat }) => {
     const apkFilename: string = json.apk;
     console.log("attempt to fetch APK file " + apkFilename);
+    dat.archive.download(apkFilename);
     return readFileFromDat(dat, apkFilename).mapTo({ dat, apkFilename });
   })
   .withLatestFrom(storagePath$)
