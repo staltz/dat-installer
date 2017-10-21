@@ -6,6 +6,7 @@ import { ScreenVNode, ScreensSource, Command } from "cycle-native-navigation";
 import {
   StyleSheet,
   Text,
+  ScrollView,
   Image,
   View,
   FlatList,
@@ -40,11 +41,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch",
-    padding: 15,
   },
 
   header: {
     flexDirection: "row",
+    padding: 15,
   },
 
   logo: {
@@ -70,6 +71,12 @@ const styles = StyleSheet.create({
 
   readmeContainer: {
     marginTop: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+
+  readmeFooter: {
+    height: 20,
   },
 
   installContainer: {
@@ -79,6 +86,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 10,
     paddingBottom: 10,
+    marginRight: 15,
     borderTopLeftRadius: 3,
     borderTopRightRadius: 3,
     borderBottomLeftRadius: 3,
@@ -358,8 +366,9 @@ export default function details(sources: Sources): Sinks {
           ]),
         ],
       ),
-      h(View, { style: styles.readmeContainer }, [
+      h(ScrollView, { style: styles.readmeContainer }, [
         h(Markdown, { styles: mdStyles, rules }, state.app.readme),
+        h(View, { style: styles.readmeFooter }),
       ]),
     ]),
   }));
