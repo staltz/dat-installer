@@ -1,12 +1,11 @@
 # Next
 
-- Stop and start react-native-node backend
+- Add GPL license and license comments
+- Add more README
+- assembleRelease
 
 # Must
 
-- Add GPL license and license comments
-- Add more README, publish real MMMMM with nice metadata.json
-- assembleRelease
 - RELEASE
 
 # Should
