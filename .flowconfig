@@ -16,6 +16,12 @@
 ; Ignore polyfills
 .*/Libraries/polyfills/.*
 
+; Ignore pre-bundled background node.js project
+<PROJECT_ROOT>/rnnodeapp
+
+; Ignore TypeScript project
+<PROJECT_ROOT>/src
+
 [include]
 
 [libs]
