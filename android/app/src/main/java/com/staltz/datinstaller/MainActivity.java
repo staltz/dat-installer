@@ -1,4 +1,4 @@
-package com.datinstaller;
+package com.staltz.datinstaller;
 
 import com.reactnativenavigation.controllers.SplashActivity;
 

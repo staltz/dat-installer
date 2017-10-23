@@ -1,4 +1,4 @@
-package com.datinstaller;
+package com.staltz.datinstaller;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
