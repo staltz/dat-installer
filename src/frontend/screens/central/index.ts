@@ -31,15 +31,16 @@ export type Sinks = {
 export { State } from "./model";
 
 function httpIntent(httpSource: HTTPSource) {
+  const pingRes$ = httpSource.select("ping").flatten();
+
   return {
     updateApps$: httpSource
       .select("allApps")
       .flatten()
       .map(res => res.body.apps),
 
-    startAllowingOtherRequests$: httpSource
-      .select("ping")
-      .flatten()
+    startAllowingOtherRequests$: pingRes$
+      .replaceError(err => pingRes$)
       .take(1)
       .mapTo(null),
   };
