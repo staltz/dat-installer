@@ -26,6 +26,10 @@ export default function model(actions: Actions): Stream<Reducer<State>> {
         Object.keys(apps).forEach(key => {
           if (!next.apps[key]) {
             next.apps[key] = apps[key];
+          } else if (next.apps[key].apkFullPath !== apps[key].apkFullPath) {
+            next.apps[key].apkFullPath = apps[key].apkFullPath;
+          } else if (next.apps[key].readme !== apps[key].readme) {
+            next.apps[key].readme = apps[key].readme;
           }
         });
         return next;
