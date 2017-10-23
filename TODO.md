@@ -1,25 +1,25 @@
 # Next
 
-- Fix bug when logo was being requested and then RR
 - Stop and start react-native-node backend
-- Add GPL license and license comments
-- Add more README, publish real MMMMM with nice metadata.json
 
 # Must
 
+- Add GPL license and license comments
+- Add more README, publish real MMMMM with nice metadata.json
+- assembleRelease
 - RELEASE
-- Render circular progress bar around the logo
-- Hide install button after it is installed
 
 # Should
 
+- Render circular progress bar around the logo
+- Hide install button after it is installed
 - Check that metadata.json convention field matches expected
 - Show install button also on list item
 - Render banner at the top, to show errors
-- Remove app
 
 # Could
 
+- Remove app
 - Validate dat key before submitting it to backend
 - Use Material design components more consistently
 - Fade-in the welcome text, instead of hard transitions

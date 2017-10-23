@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
-    backgroundColor: "#5a88c4",
+    backgroundColor: "#eeeeee",
     borderRadius: 6,
   },
 
@@ -193,7 +193,7 @@ class AppList extends PureComponent<AppListProps> {
                       numberOfLines: 1,
                       ellipsizeMode: "middle",
                     },
-                    item.version ? item.version : String(item.peers),
+                    item.version ? item.version : "Downloading...",
                   ),
                 ]),
               ]),
