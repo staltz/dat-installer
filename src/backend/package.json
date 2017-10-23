@@ -6,6 +6,7 @@
     "dat-node": "3.5.3",
     "rxjs": "5.4.3",
     "express": "4.16.2",
+    "mkdirp": "0.5.1",
     "body-parser": "1.18.2"
   }
 }

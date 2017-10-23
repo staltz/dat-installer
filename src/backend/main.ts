@@ -11,6 +11,7 @@ import {
 import { Request, Response } from "express";
 const bodyParser = require("body-parser");
 const express = require("express");
+const mkdirp = require("mkdirp");
 const Dat = require("dat-node");
 const path = require("path");
 const Rx = require("rxjs");
@@ -34,6 +35,7 @@ server.get("/ping", (req: Request, res: Response) => {
 
 server.post("/setStoragePath", (req: Request, res: Response) => {
   console.log("/setStoragePath", req.body.path);
+  mkdirp.sync(req.body.path);
   storagePath$.next(req.body.path);
   res.sendStatus(200);
 });

@@ -1,5 +1,6 @@
 # Next
 
+- Fix bug when logo was being requested and then RR
 - Stop and start react-native-node backend
 - Add GPL license and license comments
 - Add more README, publish real MMMMM with nice metadata.json
