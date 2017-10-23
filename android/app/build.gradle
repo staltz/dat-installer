@@ -108,6 +108,16 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('DATINSTALLER_RELEASE_STORE_FILE')) {
+                storeFile file(DATINSTALLER_RELEASE_STORE_FILE)
+                storePassword DATINSTALLER_RELEASE_STORE_PASSWORD
+                keyAlias DATINSTALLER_RELEASE_KEY_ALIAS
+                keyPassword DATINSTALLER_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
     splits {
         abi {
             reset()
@@ -118,6 +128,7 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
