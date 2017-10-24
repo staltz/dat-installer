@@ -4,4 +4,4 @@
 - Clone the repo and **install dependencies** with `yarn`
 - Run `npm start` to **compile** the backend, frontend and install the app on Android
 
-Hint: the smaller the PR, the more likely it is to be reviewed and merged quickly.
+Hint: SMALL PRs GET REVIEWED QUICKER. :)
