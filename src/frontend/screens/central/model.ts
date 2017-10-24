@@ -5,24 +5,33 @@ import { AppMetadata } from "../../../typings/messages";
 export type Actions = {
   goToAddition$: Stream<null>;
   goToDetails$: Stream<{ datHash: string }>;
-  updateApps$: Stream<{ [k: string]: AppMetadata }>;
+  updateFromBackend$: Stream<{
+    apps: { [k: string]: AppMetadata };
+    backendReady: boolean;
+  }>;
 };
 
 export type State = {
   apps: {
     [datHash: string]: AppMetadata;
   };
+  backendReady: boolean;
 };
 
 export default function model(actions: Actions): Stream<Reducer<State>> {
   const initReducer$ = xs.of(function initReducer(prev: State): State {
-    return prev || { apps: {} };
+    return prev || { apps: {}, backendReady: false };
   });
 
-  const updateAppsReducer$ = actions.updateApps$.map(
-    apps =>
+  const updateReducer$ = actions.updateFromBackend$.map(
+    backendState =>
       function updateAppsReducer(prev: State): State {
         let next: State | undefined = undefined;
+        const apps = backendState.apps;
+        if (prev.backendReady !== backendState.backendReady) {
+          next = next || { ...prev };
+          next.backendReady = backendState.backendReady;
+        }
         Object.keys(apps).forEach(key => {
           if (!prev.apps[key]) {
             next = next || { ...prev };
@@ -42,5 +51,5 @@ export default function model(actions: Actions): Stream<Reducer<State>> {
       },
   );
 
-  return xs.merge(initReducer$, updateAppsReducer$);
+  return xs.merge(initReducer$, updateReducer$);
 }

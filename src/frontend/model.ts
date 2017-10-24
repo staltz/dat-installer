@@ -11,6 +11,7 @@ export type State = {
   apps: {
     [datHash: string]: AppMetadata;
   };
+  backendReady: boolean;
   selectedApp: string;
   addition: AdditionState;
 };
@@ -19,7 +20,7 @@ export const centralLens: Lens<State, CentralState> = {
   get: (parent: State) => parent,
 
   set: (parent: State, child: CentralState) => {
-    return { ...parent, apps: child.apps };
+    return { ...parent, apps: child.apps, backendReady: child.backendReady };
   },
 };
 
@@ -44,6 +45,7 @@ export default function model(
       prev || {
         apps: {},
         selectedApp: "",
+        backendReady: false,
         addition: {
           textInput: "",
         },

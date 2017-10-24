@@ -27,6 +27,7 @@ const startDatSync$: Subject<string> = new Rx.Subject();
 const METADATA_FILENAME = "/metadata.json";
 
 let global_apps: { [key: string]: AppMetadata } = {};
+let global_state: { backendReady: boolean } = { backendReady: false };
 let global_errors: Array<object> = [];
 
 server.get("/ping", (req: Request, res: Response) => {
@@ -51,8 +52,8 @@ server.post("/datSync", (req: Request, res: Response) => {
   res.sendStatus(200);
 });
 
-server.get("/allApps", (req: Request, res: Response) => {
-  res.json({ apps: global_apps });
+server.get("/latest", (req: Request, res: Response) => {
+  res.json({ apps: global_apps, backendReady: global_state.backendReady });
 });
 
 server.get("/icon/:png", (req: Request, res: Response) => {
@@ -227,6 +228,9 @@ storagePath$
         return fs.lstatSync(fullPath).isDirectory();
       }),
   )
+  .do(() => {
+    global_state.backendReady = true;
+  })
   .mergeMap(files => Rx.Observable.from(files))
   .subscribe({
     next: (datDir: string) => {

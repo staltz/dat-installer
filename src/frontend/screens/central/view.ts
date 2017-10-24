@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
     backgroundColor: palette.almostWhite,
   },
 
+  beforeReadySpinner: {
+    alignSelf: "center",
+    marginTop: 40,
+    marginBottom: 15,
+  },
+
   list: {
     alignSelf: "stretch",
   },
@@ -100,23 +106,11 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 
-  emptyListSubtitle: {
+  info: {
     fontSize: 15,
     textAlign: "center",
     color: palette.text,
     margin: 10,
-  },
-
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
-
-  info: {
-    textAlign: "center",
-    color: palette.grayDark,
-    marginBottom: 5,
   },
 });
 
@@ -135,11 +129,7 @@ type AppListProps = {
 
 const placeholder = h(View, { style: styles.emptyList }, [
   h(Text, { style: styles.emptyListTitle }, "Install an Android app!"),
-  h(
-    Text,
-    { style: styles.emptyListSubtitle },
-    "Press this button to get started",
-  ),
+  h(Text, { style: styles.info }, "Press this button to get started"),
 ]);
 
 function renderLogo(item: AppMetadata) {
@@ -231,15 +221,29 @@ class AppList extends PureComponent<AppListProps> {
   }
 }
 
+const beforeReady = h(View, { style: styles.container }, [
+  h(Progress.CircleSnail, {
+    style: styles.beforeReadySpinner,
+    indeterminate: true,
+    size: 100,
+    color: palette.mainGreen,
+  }),
+  h(Text, { style: styles.info }, "Starting up..."),
+]);
+
+function renderWhenReady(state: State) {
+  return h(View, { style: styles.container }, [
+    h(AppList, { selector: "appList", apps: state.apps }),
+    h(ActionButton, {
+      selector: "addApp",
+      buttonColor: "rgb(25, 158, 51)",
+    }),
+  ]);
+}
+
 export default function view(state$: Stream<State>): Stream<ScreenVNode> {
   return state$.map(state => ({
     screen: "DatInstaller.Central",
-    vdom: h(View, { style: styles.container }, [
-      h(AppList, { selector: "appList", apps: state.apps }),
-      h(ActionButton, {
-        selector: "addApp",
-        buttonColor: "rgb(25, 158, 51)",
-      }),
-    ]),
+    vdom: state.backendReady ? renderWhenReady(state) : beforeReady,
   }));
 }

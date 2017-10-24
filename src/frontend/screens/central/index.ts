@@ -34,10 +34,10 @@ function httpIntent(httpSource: HTTPSource) {
   const pingRes$ = httpSource.select("ping").flatten();
 
   return {
-    updateApps$: httpSource
-      .select("allApps")
+    updateFromBackend$: httpSource
+      .select("latest")
       .flatten()
-      .map(res => res.body.apps),
+      .map(res => res.body),
 
     startAllowingOtherRequests$: pingRes$
       .replaceError(err => pingRes$)
@@ -60,12 +60,12 @@ function httpRequests(start$: Stream<null>): Stream<Request> {
     send: { path: RNFS.ExternalStorageDirectoryPath + "/DatInstaller" },
   });
 
-  const allAppsReq$ = start$
+  const latestReq$ = start$
     .map(() => xs.periodic(2000).startWith(null as any))
     .flatten()
-    .mapTo({ category: "allApps", url: "/allApps" });
+    .mapTo({ category: "latest", url: "/latest" });
 
-  return xs.merge(pingReq$, setStoragePathReq$, allAppsReq$);
+  return xs.merge(pingReq$, setStoragePathReq$, latestReq$);
 }
 
 function navigation(actions: Actions): Stream<Command> {
