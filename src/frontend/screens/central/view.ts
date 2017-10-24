@@ -13,6 +13,7 @@ import { h } from "@cycle/native-screen";
 import ActionButton from "react-native-action-button";
 import * as Progress from "react-native-progress";
 import { AppMetadata } from "../../../typings/messages";
+import { palette } from "../../styles";
 import { State } from "./model";
 
 const styles = StyleSheet.create({
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch",
-    backgroundColor: "#e9ecef",
+    backgroundColor: palette.almostWhite,
   },
 
   list: {
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     height: 1,
     marginLeft: 5,
     marginRight: 5,
-    backgroundColor: "#ffffff",
+    backgroundColor: palette.white,
   },
 
   item: {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
-    backgroundColor: "#ffffff",
+    backgroundColor: palette.white,
     elevation: 2,
     flexDirection: "row",
     alignItems: "center",
@@ -69,12 +70,12 @@ const styles = StyleSheet.create({
   appTitle: {
     fontSize: 16,
     maxWidth: 180,
-    color: "#202020",
+    color: palette.text,
   },
 
   appSubtitle: {
     fontSize: 14,
-    color: "#5e5e5e",
+    color: palette.grayDark,
   },
 
   logo: {
@@ -95,14 +96,14 @@ const styles = StyleSheet.create({
   emptyListTitle: {
     fontSize: 20,
     textAlign: "center",
-    color: "#202020",
+    color: palette.text,
     margin: 10,
   },
 
   emptyListSubtitle: {
     fontSize: 15,
     textAlign: "center",
-    color: "#202020",
+    color: palette.text,
     margin: 10,
   },
 
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
 
   info: {
     textAlign: "center",
-    color: "#333333",
+    color: palette.grayDark,
     marginBottom: 5,
   },
 });
@@ -153,7 +154,7 @@ function renderLogo(item: AppMetadata) {
     return h(Progress.CircleSnail, {
       indeterminate: true,
       size: 40,
-      color: "#199E33",
+      color: palette.mainGreen,
     });
   }
 }

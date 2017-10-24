@@ -14,8 +14,9 @@ import {
 } from "react-native";
 import { createElement } from "react";
 import { h } from "@cycle/native-screen";
-import { AppMetadata } from "../../../typings/messages";
 import Markdown from "react-native-simple-markdown";
+import { palette } from "../../styles";
+import { AppMetadata } from "../../../typings/messages";
 
 export type Sources = {
   screen: ScreensSource;
@@ -61,12 +62,12 @@ const styles = StyleSheet.create({
 
   name: {
     fontSize: 24,
-    color: "#202020",
+    color: palette.text,
   },
 
   version: {
     fontSize: 18,
-    color: "#202020",
+    color: palette.text,
   },
 
   readmeContainer: {
@@ -91,28 +92,28 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
     borderBottomLeftRadius: 3,
     borderBottomRightRadius: 3,
-    backgroundColor: "#199E33",
+    backgroundColor: palette.mainGreen,
   },
 
   installText: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
-    color: "#ffffff",
+    color: palette.white,
   },
 });
 
 export const mdStyles = StyleSheet.create({
   blockQuote: {
     flexDirection: "row",
-    backgroundColor: "#eeeeee",
+    backgroundColor: palette.almostWhite,
     marginTop: 8,
     marginBottom: 8,
   },
 
   blockQuoteSectionBar: {
     width: 3,
-    backgroundColor: "#cccccc",
+    backgroundColor: palette.gray,
     marginRight: 8,
   },
 
@@ -121,12 +122,12 @@ export const mdStyles = StyleSheet.create({
     marginBottom: 0,
     paddingTop: 4,
     paddingBottom: 5,
-    color: "#505050",
+    color: palette.text,
   },
 
   codeBlock: {
-    backgroundColor: "#eeeeee",
-    color: "#505050",
+    backgroundColor: palette.almostWhite,
+    color: palette.text,
     paddingTop: 3,
     paddingBottom: 3,
     paddingLeft: 5,
@@ -136,8 +137,8 @@ export const mdStyles = StyleSheet.create({
   },
 
   inlineCode: {
-    backgroundColor: "#eeeeee",
-    color: "#505050",
+    backgroundColor: palette.almostWhite,
+    color: palette.text,
     paddingTop: 2,
     paddingBottom: 2,
     paddingLeft: 4,
@@ -182,7 +183,7 @@ export const mdStyles = StyleSheet.create({
   },
 
   hr: {
-    backgroundColor: "#cccccc",
+    backgroundColor: palette.gray,
     height: 2,
   },
 
@@ -234,11 +235,11 @@ export const mdStyles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    color: "#202020",
+    color: palette.text,
   },
 
   text: {
-    color: "#202020",
+    color: palette.text,
   },
 
   video: {
