@@ -31,6 +31,7 @@
     "react-native-fs": "^2.8.1",
     "react-native-navigation": "^1.1.236",
     "react-native-node": "^2.1.1",
+    "react-native-progress": "^3.4.0",
     "react-native-simple-markdown": "^1.0.60-rc.3",
     "rxjs": "^5.4.3",
     "typescript": "^2.5.3",

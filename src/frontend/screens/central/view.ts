@@ -11,6 +11,7 @@ import {
 import { ScreenVNode } from "cycle-native-navigation";
 import { h } from "@cycle/native-screen";
 import ActionButton from "react-native-action-button";
+import * as Progress from "react-native-progress";
 import { AppMetadata } from "../../../typings/messages";
 import { State } from "./model";
 
@@ -62,6 +63,7 @@ const styles = StyleSheet.create({
 
   appDetails: {
     flexDirection: "column",
+    marginLeft: 10,
   },
 
   appTitle: {
@@ -73,14 +75,6 @@ const styles = StyleSheet.create({
   appSubtitle: {
     fontSize: 14,
     color: "#5e5e5e",
-  },
-
-  logoPlaceholder: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-    backgroundColor: "#eeeeee",
-    borderRadius: 6,
   },
 
   logo: {
@@ -156,7 +150,11 @@ function renderLogo(item: AppMetadata) {
       style: styles.logo,
     });
   } else {
-    return h(View, { style: styles.logoPlaceholder });
+    return h(Progress.CircleSnail, {
+      indeterminate: true,
+      size: 40,
+      color: "#199E33",
+    });
   }
 }
 
