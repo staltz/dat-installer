@@ -2,10 +2,10 @@
 
 - Add GPL license and license comments
 - Add more README
-- assembleRelease
 
 # Must
 
+- assembleRelease
 - RELEASE
 
 # Should

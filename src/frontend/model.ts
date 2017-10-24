@@ -17,17 +17,18 @@ export type State = {
 
 export const centralLens: Lens<State, CentralState> = {
   get: (parent: State) => parent,
+
   set: (parent: State, child: CentralState) => {
     return { ...parent, apps: child.apps };
   },
 };
 
+// get-only lens
 export const detailsLens: Lens<State, DetailsState> = {
   get: (parent: State) => ({
     app: parent.apps[parent.selectedApp] || { key: "", peers: 0 },
   }),
 
-  // Read-only
   set: (parent: State, child: DetailsState) => {
     return parent;
   },
@@ -36,7 +37,20 @@ export const detailsLens: Lens<State, DetailsState> = {
 export default function model(
   infoRes$: Stream<InfoRes>,
   navCommand$: Stream<Command>,
+  newDat$: Stream<string>,
 ): Stream<Reducer<State>> {
+  const initReducer$ = xs.of(function initReducer(prev: State): State {
+    return (
+      prev || {
+        apps: {},
+        selectedApp: "",
+        addition: {
+          textInput: "",
+        },
+      }
+    );
+  });
+
   const setSelectedAppReducer$ = navCommand$
     .filter(
       command =>
@@ -64,5 +78,28 @@ export default function model(
       },
   );
 
-  return xs.merge(setSelectedAppReducer$, packageInfoReducer$);
+  const addDatReducer$ = newDat$.map(
+    datAddress =>
+      function addDatReducer(prev: State): State {
+        const datHash =
+          datAddress.length === 70 ? datAddress.substr(6, 70) : datAddress;
+        if (!prev.apps[datHash]) {
+          const next = { ...prev };
+          next.apps[datHash] = {
+            key: datHash,
+            peers: 0,
+          };
+          return next;
+        } else {
+          return prev;
+        }
+      },
+  );
+
+  return xs.merge(
+    initReducer$,
+    setSelectedAppReducer$,
+    packageInfoReducer$,
+    addDatReducer$,
+  );
 }

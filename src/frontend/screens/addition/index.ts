@@ -23,6 +23,7 @@ export type Sinks = {
   navCommand: Stream<Command>;
   onion: Stream<Reducer<State>>;
   http: Stream<RequestOptions>;
+  newDat: Stream<string>;
 };
 
 export { State } from "./model";
@@ -31,16 +32,18 @@ export default function addition(sources: Sources): Sinks {
   const state$ = sources.onion.state$;
   const actions = intent(sources.screen);
 
-  const request$ = actions.submit$
+  const addDat$ = actions.submit$
     .compose(sampleCombine(state$))
     .filter(([_, state]) => state.textInput.length >= 64)
-    .map(([_, state]) => ({
-      url: "/datSync",
-      method: "POST",
-      send: { datKey: state.textInput },
-    }));
+    .map(([_, state]) => state.textInput);
 
-  const dismissThisScreen$ = request$.mapTo({
+  const request$ = addDat$.map(datHash => ({
+    url: "/datSync",
+    method: "POST",
+    send: { datKey: datHash },
+  }));
+
+  const dismissThisScreen$ = addDat$.mapTo({
     type: "dismissModal",
   } as DismissModalCommand);
 
@@ -53,5 +56,6 @@ export default function addition(sources: Sources): Sinks {
     navCommand: dismissThisScreen$,
     onion: reducer$,
     http: request$,
+    newDat: addDat$,
   };
 }

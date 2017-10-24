@@ -11,7 +11,10 @@ import {
 } from "cycle-native-navigation";
 import { AppMetadata } from "../typings/messages";
 import central, { State as CentralState } from "./screens/central";
-import addition, { State as AdditionState } from "./screens/addition";
+import addition, {
+  State as AdditionState,
+  Sinks as AdditionSinks,
+} from "./screens/addition";
 import details, { State as DetailsState } from "./screens/details";
 import { InfoRes, InfoReq } from "./drivers/package-info";
 import model, { State, centralLens, detailsLens } from "./model";
@@ -73,7 +76,12 @@ export default function main(sources: Sources): Sinks {
     detailsSinks.navCommand,
   );
 
-  const mainReducer$ = model(sources.packageInfo, navCommand$);
+  const mainReducer$ = model(
+    sources.packageInfo,
+    navCommand$,
+    ((additionSinks as any) as AdditionSinks).newDat,
+  );
+
   const infoReq$ = packageInfo(sources.onion.state$);
 
   const request$ = xs
