@@ -1,6 +1,5 @@
 # Next
 
-- Add GPL license and license comments
 - Add more README
 
 # Must
