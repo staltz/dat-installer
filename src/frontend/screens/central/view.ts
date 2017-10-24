@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
 
   appSubtitle: {
     fontSize: 14,
-    color: palette.grayDark,
+    color: palette.gray,
   },
 
   logo: {
