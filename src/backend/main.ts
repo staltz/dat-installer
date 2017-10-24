@@ -26,7 +26,7 @@ const storagePath$: ReplaySubject<string> = new Rx.ReplaySubject(1);
 const startDatSync$: Subject<string> = new Rx.Subject();
 const METADATA_FILENAME = "/metadata.json";
 
-let global_state: { [key: string]: AppMetadata } = {};
+let global_apps: { [key: string]: AppMetadata } = {};
 let global_errors: Array<object> = [];
 
 server.get("/ping", (req: Request, res: Response) => {
@@ -52,7 +52,7 @@ server.post("/datSync", (req: Request, res: Response) => {
 });
 
 server.get("/allApps", (req: Request, res: Response) => {
-  res.json({ apps: global_state });
+  res.json({ apps: global_apps });
 });
 
 server.get("/icon/:png", (req: Request, res: Response) => {
@@ -98,10 +98,10 @@ dat$.subscribe({
     function updatePeers() {
       const datHash = (dat.key as Buffer).toString("hex");
       console.log(`${dat.network.connected} other peers sharing ${datHash}`);
-      if (global_state[datHash]) {
-        global_state[datHash].peers = dat.network.connected;
+      if (global_apps[datHash]) {
+        global_apps[datHash].peers = dat.network.connected;
       } else {
-        global_state[datHash] = {
+        global_apps[datHash] = {
           key: datHash,
           peers: dat.network.connected,
         };
@@ -117,7 +117,7 @@ dat$.subscribe({
   },
 });
 
-// Read metadata to update global_state
+// Read metadata to update global_apps
 const metadata$ = dat$
   .do(x => console.log("attempt to read " + METADATA_FILENAME + " file"))
   .mergeMap(dat =>
@@ -153,7 +153,7 @@ const apkFullPath$ = metadata$
     return { apkFullPath, datHash };
   });
 
-// Update global_state metadata for an app
+// Update global_apps metadata for an app
 metadata$.subscribe({
   error: (e: Error) => {
     if (e.message === `${METADATA_FILENAME} could not be found`) {
@@ -166,14 +166,14 @@ metadata$.subscribe({
   },
 });
 
-// Update global_state readme for an app
+// Update global_apps readme for an app
 readme$.subscribe({
   next: ({ contents, dat }) => {
     const datHash = (dat.key as Buffer).toString("hex");
-    if (global_state[datHash]) {
-      global_state[datHash].readme = contents;
+    if (global_apps[datHash]) {
+      global_apps[datHash].readme = contents;
     } else {
-      global_state[datHash] = {
+      global_apps[datHash] = {
         key: datHash,
         peers: 0,
         readme: contents,
@@ -191,13 +191,13 @@ readme$.subscribe({
   },
 });
 
-// Update global_state apk full path for an app
+// Update global_apps apk full path for an app
 apkFullPath$.subscribe({
   next: ({ apkFullPath, datHash }) => {
-    if (global_state[datHash]) {
-      global_state[datHash].apkFullPath = apkFullPath;
+    if (global_apps[datHash]) {
+      global_apps[datHash].apkFullPath = apkFullPath;
     } else {
-      global_state[datHash] = {
+      global_apps[datHash] = {
         key: datHash,
         peers: 0,
         readme: apkFullPath,
