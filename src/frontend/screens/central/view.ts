@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 
   appSubtitle: {
     fontSize: 14,
-    color: "#202020",
+    color: "#5e5e5e",
   },
 
   logoPlaceholder: {
@@ -138,6 +138,56 @@ type AppListProps = {
   onPressApp?: (ev: { datHash: string }) => void;
 };
 
+const placeholder = h(View, { style: styles.emptyList }, [
+  h(Text, { style: styles.emptyListTitle }, "Install an Android app!"),
+  h(
+    Text,
+    { style: styles.emptyListSubtitle },
+    "Press this button to get started",
+  ),
+]);
+
+function renderLogo(item: AppMetadata) {
+  if (item.package) {
+    return h(Image, {
+      source: {
+        uri: `http://localhost:8182/icon/${item.package}.png`,
+      },
+      style: styles.logo,
+    });
+  } else {
+    return h(View, { style: styles.logoPlaceholder });
+  }
+}
+
+function renderTitle(item: AppMetadata) {
+  return h(
+    Text,
+    {
+      style: styles.appTitle,
+      numberOfLines: 1,
+      ellipsizeMode: "middle",
+    },
+    item.label ? item.label : item.key,
+  );
+}
+
+function renderSubtitle(item: AppMetadata) {
+  return h(
+    Text,
+    {
+      style: styles.appSubtitle,
+      numberOfLines: 1,
+      ellipsizeMode: "middle",
+    },
+    item.version
+      ? item.version
+      : item.peers > 0
+        ? `Downloading from ${item.peers} peers...`
+        : "Searching...",
+  );
+}
+
 class AppList extends PureComponent<AppListProps> {
   public render() {
     const apps = this.props.apps;
@@ -158,62 +208,26 @@ class AppList extends PureComponent<AppListProps> {
           if (index === 0) style.push(styles.firstItem);
           if (index === data.length - 1) style.push(styles.lastItem);
 
-          return h(
-            TouchableNativeFeedback,
-            {
-              background: TouchableNativeFeedback.SelectableBackground(),
-              onPress: () => {
-                if (onPressApp) onPressApp({ datHash: item.key });
-              },
+          const touchableProps = {
+            background: TouchableNativeFeedback.SelectableBackground(),
+            onPress: () => {
+              if (onPressApp) onPressApp({ datHash: item.key });
             },
-            [
-              h(View, { style }, [
-                item.package
-                  ? h(Image, {
-                      source: {
-                        uri: `http://localhost:8182/icon/${item.package}.png`,
-                      },
-                      style: styles.logo,
-                    })
-                  : h(View, { style: styles.logoPlaceholder }),
-                h(View, { style: styles.appDetails }, [
-                  h(
-                    Text,
-                    {
-                      style: styles.appTitle,
-                      numberOfLines: 1,
-                      ellipsizeMode: "middle",
-                    },
-                    item.label ? item.label : item.key,
-                  ),
-                  h(
-                    Text,
-                    {
-                      style: styles.appSubtitle,
-                      numberOfLines: 1,
-                      ellipsizeMode: "middle",
-                    },
-                    item.version
-                      ? item.version
-                      : item.peers > 0
-                        ? `Downloading from ${item.peers} peers...`
-                        : "Searching...",
-                  ),
-                ]),
+          };
+
+          return h(TouchableNativeFeedback, touchableProps, [
+            h(View, { style }, [
+              renderLogo(item),
+              h(View, { style: styles.appDetails }, [
+                renderTitle(item),
+                renderSubtitle(item),
               ]),
-            ],
-          );
+            ]),
+          ]);
         },
       });
     } else {
-      return h(View, { style: styles.emptyList }, [
-        h(Text, { style: styles.emptyListTitle }, "Install an Android app!"),
-        h(
-          Text,
-          { style: styles.emptyListSubtitle },
-          "Press this button to get started",
-        ),
-      ]);
+      return placeholder;
     }
   }
 }
