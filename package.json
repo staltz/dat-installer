@@ -8,7 +8,7 @@
     "build-front": "tsc -p ./tsconfig-frontend.json",
     "prestart": "npm run build-back && npm run build-front",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "update-android-version": "react-native-version --target android",
+    "update-android-version": "react-native-version --target android --never-amend",
     "license-check": "license-check",
     "test": "jest"
   },
