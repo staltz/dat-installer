@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch",
-    backgroundColor: palette.almostWhite,
+    backgroundColor: palette.white,
   },
 
   info: {
