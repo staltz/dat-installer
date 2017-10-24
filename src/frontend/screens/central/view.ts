@@ -193,7 +193,11 @@ class AppList extends PureComponent<AppListProps> {
                       numberOfLines: 1,
                       ellipsizeMode: "middle",
                     },
-                    item.version ? item.version : "Downloading...",
+                    item.version
+                      ? item.version
+                      : item.peers > 0
+                        ? `Downloading from ${item.peers} peers...`
+                        : "Searching...",
                   ),
                 ]),
               ]),

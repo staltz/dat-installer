@@ -22,17 +22,23 @@ export default function model(actions: Actions): Stream<Reducer<State>> {
   const updateAppsReducer$ = actions.updateApps$.map(
     apps =>
       function updateAppsReducer(prev: State): State {
-        const next: State = { ...prev };
+        let next: State | undefined = undefined;
         Object.keys(apps).forEach(key => {
-          if (!next.apps[key]) {
+          if (!prev.apps[key]) {
+            next = next || { ...prev };
             next.apps[key] = apps[key];
-          } else if (next.apps[key].apkFullPath !== apps[key].apkFullPath) {
+          } else if (prev.apps[key].apkFullPath !== apps[key].apkFullPath) {
+            next = next || { ...prev };
             next.apps[key].apkFullPath = apps[key].apkFullPath;
-          } else if (next.apps[key].readme !== apps[key].readme) {
+          } else if (prev.apps[key].readme !== apps[key].readme) {
+            next = next || { ...prev };
             next.apps[key].readme = apps[key].readme;
+          } else if (prev.apps[key].peers !== apps[key].peers) {
+            next = next || { ...prev };
+            next.apps[key].peers = apps[key].peers;
           }
         });
-        return next;
+        return next ? next : prev;
       },
   );
 
