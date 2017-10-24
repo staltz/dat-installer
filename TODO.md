@@ -5,15 +5,13 @@
 
 # Must
 
-- assembleRelease
 - RELEASE
 
 # Should
 
-- Render circular progress bar around the logo
 - Hide install button after it is installed
 - Check that metadata.json convention field matches expected
-- Show install button also on list item
+- Show install/open/update button on list item
 - Render banner at the top, to show errors
 
 # Could
