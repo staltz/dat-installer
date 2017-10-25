@@ -29,15 +29,3 @@ run(onionify(main), {
 });
 
 RNNode.start();
-
-const startedListener = () => {
-  RNNode.start();
-  NativeModules.ActivityCallbacks.setStartedListener(startedListener);
-};
-NativeModules.ActivityCallbacks.setStartedListener(startedListener);
-
-const stoppedListener = () => {
-  RNNode.stop();
-  NativeModules.ActivityCallbacks.setStoppedListener(stoppedListener);
-};
-NativeModules.ActivityCallbacks.setStoppedListener(stoppedListener);

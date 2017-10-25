@@ -4229,9 +4229,9 @@ react-native-navigation@^1.1.236:
   dependencies:
     lodash "4.x.x"
 
-react-native-node@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-node/-/react-native-node-2.1.1.tgz#a370b65051b04570285c60e53823b3560868cb1d"
+react-native-node@3.0.x:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-node/-/react-native-node-3.0.0.tgz#0783a28936bd595d72fbb9ec9b19b99d7b65e19e"
   dependencies:
     cheerio "^1.0.0-rc.1"
     mkdirp "^0.5.1"

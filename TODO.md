@@ -1,7 +1,6 @@
 # Next
 
 - Publish this on F-Droid
-- Fix bug where app GUI doesn't respond after pause/resume
 
 # Must
 
