@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 
 export default function view(state$: Stream<State>): Stream<ScreenVNode> {
   return state$.map(state => {
-    const looksValid = state.textInput.length >= 64;
+    const looksValid = state.textInput.startsWith('dat://');
     const buttonStyle = [styles.buttonContainer];
     if (looksValid) {
       buttonStyle.push(styles.buttonContainerValid);
