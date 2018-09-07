@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Setting up...";
 mkdir -p ./rnnodeapp/;
