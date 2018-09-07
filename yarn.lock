@@ -4223,9 +4223,9 @@ react-native-fs@^2.8.1:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
 
-react-native-navigation@^1.1.236:
-  version "1.1.236"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.236.tgz#4babbfee14d9f865186f763248ffa54da68ad7fd"
+react-native-navigation@^1.1.485:
+  version "1.1.485"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.485.tgz#99b469ded59589888ddb76f0b2ebf8258b24b9e7"
   dependencies:
     lodash "4.x.x"
 
