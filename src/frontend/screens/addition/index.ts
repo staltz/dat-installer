@@ -54,7 +54,7 @@ export default function addition(sources: Sources): Sinks {
 
   const addDat$ = actions.submit$
     .compose(sampleCombine(state$))
-    .filter(([_, state]) => state.textInput.length >= 64)
+    .filter(([_, state]) => state.textInput.startsWith('dat://'))
     .map(([_, state]) => state.textInput);
 
   const request$ = addDat$.map(datHash => ({

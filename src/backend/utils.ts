@@ -50,7 +50,7 @@ export function joinNetwork(dat: any): Observable<any> {
 }
 
 export function looksLikeDatHash(str: string): boolean {
-  return str.length === 64;
+  return str !== 'icons';
 }
 
 export function trimProtocolPrefix(str: string): string {

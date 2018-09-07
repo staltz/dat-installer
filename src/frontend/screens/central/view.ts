@@ -201,7 +201,6 @@ class AppList extends PureComponent<AppListProps> {
   public render() {
     const apps = this.props.apps;
     const data = Object.keys(apps)
-      .filter(key => key.length >= 64)
       .map(key => apps[key]);
     const onPressApp = this.props.onPressApp;
 
