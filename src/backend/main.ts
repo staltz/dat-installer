@@ -101,29 +101,26 @@ server.get("/icon/:png", (req: Request, res: Response) => {
 // Create dat and sync, when given a new dat hash
 const dat$ = startDatSync$
   .withLatestFrom(storagePath$)
-  .concatMap(arr => {
-    const datHash = arr[0];
-    const storagePath = arr[1];
-    const datKey = "dat://" + datHash;
-    const datPath = path.join(storagePath, datHash);
+  .concatMap(([url, storagePath]) => {
+    const datKey = "dat://" + url;
+    const datPath = path.join(storagePath, url);
     console.log("createDat", datPath, datKey);
-    return createDat(datPath, { key: datKey }).take(1);
+    return createDat(datPath, { key: datKey }).take(1).map(dat => ({url, dat}));
   })
-  .mergeMap(dat => joinNetwork(dat).mapTo(dat))
+  .mergeMap(x => joinNetwork(x.dat).mapTo(x))
   .publishReplay(1)
   .refCount();
 
 // Update the number of connected peers
 dat$.subscribe({
-  next: dat => {
+  next: ({url, dat}) => {
     function updatePeers() {
-      const datHash = (dat.key as Buffer).toString("hex");
-      console.log(`${dat.network.connected} other peers sharing ${datHash}`);
-      if (global_apps[datHash]) {
-        global_apps[datHash].peers = dat.network.connected;
+      console.log(`${dat.network.connected} other peers sharing ${url}`);
+      if (global_apps[url]) {
+        global_apps[url].peers = dat.network.connected;
       } else {
-        global_apps[datHash] = {
-          key: datHash,
+        global_apps[url] = {
+          key: url,
           peers: dat.network.connected,
         };
       }
@@ -140,38 +137,39 @@ dat$.subscribe({
 
 // Read metadata to update global_apps
 const metadata$ = dat$
-  .do(x => console.log("attempt to read " + METADATA_FILENAME + " file"))
-  .mergeMap(dat =>
+  .do(({url}) => console.log(`attempt to read ${url} ${METADATA_FILENAME} file`))
+  .mergeMap(({dat, url}) =>
     readFileInDat(dat, METADATA_FILENAME, "utf-8").map(contents => ({
       json: JSON.parse(contents),
       dat,
+      url
     })),
   )
   .publishReplay(1)
   .refCount();
 
-const readme$ = metadata$.mergeMap(({ json, dat }) => {
+const readme$ = metadata$.mergeMap(({ json, dat, url }) => {
   console.log("attempt to read readme file " + json.readme);
   return json.readme
     ? readFileInDat(dat, json.readme, "utf-8").map(contents => ({
         contents,
         dat,
+        url
       }))
     : Rx.Observable.empty();
 });
 
 const apkFullPath$ = metadata$
-  .mergeMap(({ json, dat }) => {
+  .mergeMap(({ json, dat, url }) => {
     const apkFilename: string = json.apk;
     console.log("attempt to fetch APK file " + apkFilename);
     dat.archive.download(apkFilename);
-    return readFileFromDat(dat, apkFilename).mapTo({ dat, apkFilename });
+    return readFileFromDat(dat, apkFilename).mapTo({ apkFilename, url });
   })
   .withLatestFrom(storagePath$)
-  .map(([{ dat, apkFilename }, storagePath]) => {
-    const datHash = (dat.key as Buffer).toString("hex");
-    const apkFullPath: string = path.join(storagePath, datHash, apkFilename);
-    return { apkFullPath, datHash };
+  .map(([{ apkFilename, url }, storagePath]) => {
+    const apkFullPath: string = path.join(storagePath, url, apkFilename);
+    return { apkFullPath, url };
   });
 
 // Update global_apps metadata for an app
@@ -214,12 +212,12 @@ readme$.subscribe({
 
 // Update global_apps apk full path for an app
 apkFullPath$.subscribe({
-  next: ({ apkFullPath, datHash }) => {
-    if (global_apps[datHash]) {
-      global_apps[datHash].apkFullPath = apkFullPath;
+  next: ({ apkFullPath, url }) => {
+    if (global_apps[url]) {
+      global_apps[url].apkFullPath = apkFullPath;
     } else {
-      global_apps[datHash] = {
-        key: datHash,
+      global_apps[url] = {
+        key: url,
         peers: 0,
         readme: apkFullPath,
       };
