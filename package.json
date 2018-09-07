@@ -10,6 +10,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "update-android-version": "react-native-version --target android --never-amend",
     "license-check": "license-check",
+    "clean": "watchman watch-del-all && react-native start --reset-cache",
     "test": "jest"
   },
   "license-check-config": {
