@@ -153,7 +153,6 @@ const readme$ = metadata$.mergeMap(({ json, dat, url }) => {
   return json.readme
     ? readFileInDat(dat, json.readme, "utf-8").map(contents => ({
         contents,
-        dat,
         url
       }))
     : Rx.Observable.empty();
@@ -187,13 +186,12 @@ metadata$.subscribe({
 
 // Update global_apps readme for an app
 readme$.subscribe({
-  next: ({ contents, dat }) => {
-    const datHash = (dat.key as Buffer).toString("hex");
-    if (global_apps[datHash]) {
-      global_apps[datHash].readme = contents;
+  next: ({ contents, url }) => {
+    if (global_apps[url]) {
+      global_apps[url].readme = contents;
     } else {
-      global_apps[datHash] = {
-        key: datHash,
+      global_apps[url] = {
+        key: url,
         peers: 0,
         readme: contents,
       };
