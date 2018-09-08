@@ -217,7 +217,7 @@ apkFullPath$.subscribe({
       global_apps[url] = {
         key: url,
         peers: 0,
-        readme: apkFullPath,
+        apkFullPath: apkFullPath,
       };
     }
   },
