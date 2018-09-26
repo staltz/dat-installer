@@ -12,10 +12,16 @@ With Dat Installer you can insert a Dat link where you expect the APK file to be
 
 ![screenshots](./screenshots.png)
 
-The first app you can install through this is [MMMMM](https://github.com/staltz/mmmmm-mobile) (preview), just paste the following Dat link into Dat Installer:
+One such app you can install through this is [Manyverse](https://gitlab.com/staltz/manyverse), just paste the following Dat link into Dat Installer:
 
 ```
-dat://50237519bcfec8c86632112906ee39c76004a3d4bbf1b342c0b2926f4af67d35
+dat://manyverse-latest.hashbase.io
+```
+
+or the Dat hash address:
+
+```
+dat://520a00daf0a309bef7722b3f3338854e9da667d01e48dc7b83b118d86354d6d3
 ```
 
 ## Publishing an app
