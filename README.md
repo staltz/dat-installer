@@ -24,6 +24,14 @@ or the Dat hash address:
 dat://520a00daf0a309bef7722b3f3338854e9da667d01e48dc7b83b118d86354d6d3
 ```
 
+You can also install (actually update) Dat Installer through Dat Installer! 😵
+
+```
+dat://dat-installer-latest.hashbase.io
+or
+dat://8c23f9eb1f09b5980d12bbd2150a07c8bae1b281f1f58d7ca9bef829634388d5/
+```
+
 ## Publishing an app
 
 If you are building an Android app and would like to distribute it through Dat, you should have a metadata file named `metadata.json` (exactly this name) with the following contents:
