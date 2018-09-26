@@ -54,8 +54,10 @@ export default function addition(sources: Sources): Sinks {
 
   const addDat$ = actions.submit$
     .compose(sampleCombine(state$))
-    .filter(([_, state]) => state.textInput.startsWith('dat://'))
-    .map(([_, state]) => state.textInput);
+    .map(([_, state]) => state.textInput.startsWith('dat://')
+      ? state.textInput.substr(6)
+      : state.textInput
+    );
 
   const request$ = addDat$.map(datHash => ({
     url: "/datSync",
