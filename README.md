@@ -29,7 +29,7 @@ You can also install (actually update) Dat Installer through Dat Installer! 😵
 ```
 dat://dat-installer-latest.hashbase.io
 or
-dat://8c23f9eb1f09b5980d12bbd2150a07c8bae1b281f1f58d7ca9bef829634388d5/
+dat://8c23f9eb1f09b5980d12bbd2150a07c8bae1b281f1f58d7ca9bef829634388d5
 ```
 
 ## Publishing an app
